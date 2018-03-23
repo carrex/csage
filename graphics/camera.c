@@ -26,10 +26,10 @@ void cam_calc_view(struct Camera* cam)
 	float pos[3]    = { -cam->pos[0], -cam->pos[1], -cam->pos[2] };
 	mat_translate(trans, pos, 4);
 	
-	float rot[] = I4;
+	float rot[16] = I4;
 	mat_rotate(rot, -(float)radians(cam->yaw), 4, Y_AXIS);
 	
-	mat_multiply(trans, rot, cam->view, 4, 4);
+	mat_multiply(trans, rot, cam->view, 4);
 	// mat_print(trans, 4);
 	// mat_print(rot, 4);
 	// DEBUG("View: ");
@@ -44,7 +44,7 @@ void cam_calc_proj(struct Camera* cam)
 	if (cam->projection == PROJ_PERSPECTIVE) {
 		float fov    = (float)radians(67.0);
 		float aspect = 1280.0f / 720.0f;
-		float range  = (float)tan(fov * 0.5f) * near;
+		float range  = (float)tan(fov/2.0f) * near;
 		DEBUG("%f, %f, %f", fov, aspect, range);
 		sx = (2.0f * near) / (range * aspect + range * aspect); // -->!
 		sy = near / range;
@@ -79,7 +79,7 @@ void cam_calc_proj(struct Camera* cam)
 	mat_copy(cam->proj, proj, 4);
 	DEBUG("Projection: ");
 	mat_print(cam->proj, 4);
-	float a[16];
-	mat_multiply(cam->view, cam->proj, a, 4, 4);
-	mat_print(a, 4);
+	// float a[16];
+	// mat_multiply(cam->view, cam->proj, a, 4, 4);
+	// mat_print(a, 4);
 }

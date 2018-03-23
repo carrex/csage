@@ -37,10 +37,10 @@ void ren_draw(struct Renderer* ren)
 		glUseProgram(ren->primshader->program);
 		shader_set_vec4(ren->primshader, "colour", ren->prims[i]->colour);
 		shader_set_mat4(ren->primshader, "model", (float[])I4);
-		// shader_set_mat4(ren->primshader, "view", I4);
-		// shader_set_mat4(ren->primshader, "proj", I4);
-		shader_set_mat4(ren->primshader, "view", ren->cam->view);
-		shader_set_mat4(ren->primshader, "proj", ren->cam->proj);
+		shader_set_mat4(ren->primshader, "view",  (float[])I4);
+		shader_set_mat4(ren->primshader, "proj",  (float[])I4);
+		// shader_set_mat4(ren->primshader, "view", ren->cam->view);
+		// shader_set_mat4(ren->primshader, "proj", ren->cam->proj);
 		glBindVertexArray(ren->prims[i]->vao);
 
 		glDrawArrays(ren->prims[i]->mode, 0, ren->prims[i]->vcount);
