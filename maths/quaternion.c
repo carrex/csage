@@ -2,6 +2,15 @@
 
 #include "quaternion.h"
 
+void quat_new_versor(float* out, float x, float y, float z, float angle)
+{
+	float sina = (float)sin(angle/2.0);
+	out[0] = sina * x;
+	out[1] = sina * y;
+	out[2] = sina * z;
+	out[3] = (float)cos(angle/2.0);
+}
+
 #define x  (quat[0])
 #define y  (quat[1])
 #define z  (quat[2])
@@ -14,15 +23,6 @@
 #define y2 (quat2[1])
 #define z2 (quat2[2])
 #define w2 (quat2[3])
-
-void quat_new_versor(float* out, float x, float y, float z, float angle)
-{
-	float sina = (float)sin(angle/2.0);
-	out[0] = sina * x;
-	out[1] = sina * y;
-	out[2] = sina * z;
-	out[3] = (float)cos(angle/2.0);
-}
 
 void quat_normalise(float* quat)
 {

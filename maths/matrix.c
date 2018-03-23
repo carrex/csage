@@ -3,7 +3,7 @@
 #include "maths.h"
 #include "matrix.h"
 
-void _mat_print(float* mat, uint8 dim)
+void mat_print(float* mat, uint8 dim)
 {
 	printf("Mat%dx%d:\n", dim, dim);
 	for (uint8 j = 0; j < dim; j++) {
@@ -15,16 +15,16 @@ void _mat_print(float* mat, uint8 dim)
 	}
 }
 
-void _mat_copy(float* mat1, float* mat2, uint8 dim)
+void mat_copy(float* mat1, float* mat2, uint8 dim)
 {
 	for (uint8 j = 0; j < dim; j++)
 		for (uint8 i = 0; i < dim; i++)
 			mat1[j*dim + i] = mat2[j*dim + i];
 }
 
-void _mat_transpose(float* mat, uint8 dim)
+void mat_transpose(float* mat, uint8 dim)
 {
-	float* tmp = malloc(sq((uint32)dim) * (uint32)sizeof(float));
+	float* tmp = malloc(sq((size_t)dim) * sizeof(float));
 	if (!tmp)
 		ERROR("[MATHS] Failed to allocate memory");
 	mat_copy(tmp, mat, dim);
@@ -34,14 +34,14 @@ void _mat_transpose(float* mat, uint8 dim)
 	free(tmp);
 }
 
-void _mat_multiplys(float* mat, float s, uint8 dim)
+void mat_multiplys(float* mat, float s, uint8 dim)
 {
 	for (uint8 j = 0; j < dim; j++)
 		for (uint8 i = 0; i < dim; i++)
 			mat[j*dim + i] *= s;
 }
 
-void _mat_multiply(float* mat1, float* mat2, float* out, uint8 dim1, uint8 dim2)
+void mat_multiply(float* mat1, float* mat2, float* out, uint8 dim1, uint8 dim2)
 {
 	for (uint8 j = 0; j < dim2; j++) {
 		for (uint8 i = 0; i < dim1; i++) {
@@ -54,8 +54,9 @@ void _mat_multiply(float* mat1, float* mat2, float* out, uint8 dim1, uint8 dim2)
 }
 
 /* Only works for 4x4 matrices */
-void _mat_translate(float* mat, float* vec, uint8 dim)
+void mat_translate(float* mat, float* vec, uint8 dim)
 {
+	(void)dim;
 	mat[12] = vec[0];
 	mat[13] = vec[1];
 	mat[14] = vec[2];
@@ -64,7 +65,7 @@ void _mat_translate(float* mat, float* vec, uint8 dim)
 }
 
 /* Only works for 4x4 matrices */
-void _mat_rotate(float* mat, float angle, uint8 dim, enum Axis axis)
+void mat_rotate(float* mat, float angle, uint8 dim, enum Axis axis)
 {
 	(void)dim;
 	float sina = (float)sin(angle);

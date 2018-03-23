@@ -15,7 +15,6 @@ uint32 shader_new_vshader(const char* src);
 uint32 shader_new_fshader(const char* src);
 int32 shader_get_uniform(struct Shader* shader, char* name);
 void shader_set_vec4(struct Shader* shader, char* name, float* vec);
-#define shader_set_mat4(s, n, m) _shader_set_mat4(s, n, (float*)m)
-void _shader_set_mat4(struct Shader* shader, char* name, float* mat);
+void shader_set_mat4(struct Shader* shader, char* name, float* mat);
 
 #endif

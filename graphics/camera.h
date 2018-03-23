@@ -8,11 +8,11 @@ enum Projection {
 
 struct Camera {
 	enum Projection projection;
-	Vec3D pos;
-	Vec3D front, up, right, worldup;
+	float pos[3];
+	float front[3], up[3], right[3], worldup[3];
 	float yaw, pitch; // In degrees
 	float speed;
-	Mat4x4 proj, view;
+	float proj[16], view[16];
 };
 
 struct Camera cam_new(void);

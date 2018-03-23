@@ -82,7 +82,7 @@ void shader_set_vec4(struct Shader* shader, char* name, float* vec)
     glUniform4fv(loc, 1, vec);
 }
 
-void _shader_set_mat4(struct Shader* shader, char* name, float* mat)
+void shader_set_mat4(struct Shader* shader, char* name, float* mat)
 {
     int32 loc = shader_get_uniform(shader, name);
     if (loc < 0)

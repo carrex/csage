@@ -36,7 +36,7 @@ void ren_draw(struct Renderer* ren)
 	for (uint16 i = 0; ren->prims[i]; i++) {
 		glUseProgram(ren->primshader->program);
 		shader_set_vec4(ren->primshader, "colour", ren->prims[i]->colour);
-		shader_set_mat4(ren->primshader, "model", I4);
+		shader_set_mat4(ren->primshader, "model", (float[])I4);
 		// shader_set_mat4(ren->primshader, "view", I4);
 		// shader_set_mat4(ren->primshader, "proj", I4);
 		shader_set_mat4(ren->primshader, "view", ren->cam->view);

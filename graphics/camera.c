@@ -22,12 +22,12 @@ struct Camera cam_new()
 
 void cam_calc_view(struct Camera* cam)
 {
-	float* trans = I4;
-	Vec3D  pos   = { -cam->pos[0], -cam->pos[1], -cam->pos[2] };
+	float trans[16] = I4;
+	float pos[3]    = { -cam->pos[0], -cam->pos[1], -cam->pos[2] };
 	mat_translate(trans, pos, 4);
 	
-	float* rot = I4;
-	mat_rotate(rot, -radians(cam->yaw), 4, Y_AXIS);
+	float rot[] = I4;
+	mat_rotate(rot, -(float)radians(cam->yaw), 4, Y_AXIS);
 	
 	mat_multiply(trans, rot, cam->view, 4, 4);
 	// mat_print(trans, 4);
@@ -72,14 +72,14 @@ void cam_calc_proj(struct Camera* cam)
 	// sz = 1.0f;
 	// sw = 1.0f;
 	// pz = 0.0f;
-	float proj[] = { sx  , 0.0f,  0.0f,  0.0f,
-	                 0.0f, sy  ,  0.0f,  0.0f,
-	                 0.0f, 0.0f,  sz  , -1.0f,
-	                 0.0f, 0.0f,  pz  ,  sw  , };
+	float proj[16] = { sx  , 0.0f,  0.0f,  0.0f,
+	                   0.0f, sy  ,  0.0f,  0.0f,
+	                   0.0f, 0.0f,  sz  , -1.0f,
+	                   0.0f, 0.0f,  pz  ,  sw  , };
 	mat_copy(cam->proj, proj, 4);
 	DEBUG("Projection: ");
 	mat_print(cam->proj, 4);
-	Mat4x4 a;
+	float a[16];
 	mat_multiply(cam->view, cam->proj, a, 4, 4);
 	mat_print(a, 4);
 }
