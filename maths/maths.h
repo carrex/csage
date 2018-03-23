@@ -7,6 +7,7 @@
 #include "common.h"
 #include "vector.h"
 #include "matrix.h"
+#include "quaternion.h"
 
 #define PI 3.14159265358979
 #define E  2.71828182845904

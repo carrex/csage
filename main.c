@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	glViewport(0, 0, config.windoww, config.windowh); // -->?
+	glViewport(0, 0, 1280.0, 720.0);
 
 	context = SDL_GL_CreateContext(window);
 	if (context)
@@ -50,7 +50,11 @@ int main(int argc, char** argv)
 		DEBUG("[INIT] SDL_image initialized");
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
 
+	DEBUG_GL();
 	DEBUG(" ");
 
 	struct Camera camera = cam_new();
@@ -59,12 +63,12 @@ int main(int argc, char** argv)
 	// struct Line line = line_new((Vec3D){-0.1f, -0.1f, 0.0f}, (Vec3D){-0.8f, -0.8f, 0.0f}, RED, NULL);
 	// struct Triangle tri = triangle_new((float[]){0.75f, 0.25f, 0.0f, 0.5f, 0.5f, 0.0f, 0.25f, 0.25f, 0.0f}, BLUE, NULL);
 	// struct Quad quad = quad_new((float[]){0.2f, 0.2f, 0.0f, 0.0f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, -0.5f, 0.0f, 0.0f}, GREEN, NULL);
-	struct Primitive line = prim_new(PRIMITIVE_LINE, (float[]){-0.9f, -0.9f, 0.0f, 0.9f, 0.9f, 0.0f}, RED);
-	struct Primitive tri  = prim_new(PRIMITIVE_TRIANGLE, (float[]){0.75f, 0.25f, 0.0f, 0.5f, 0.5f, 0.0f, 0.25f, 0.25f, 0.0f}, BLUE);
-	struct Primitive quad = prim_new(PRIMITIVE_QUAD, (float[]){0.2f, 0.2f, 0.0f, 0.0f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, -0.5f, 0.0f, 0.0f}, GREEN);
-	ren_add_prim(&renderer, &line);
+	// struct Primitive line = prim_new(PRIMITIVE_LINE, (float[]){-0.9f, -0.9f, 0.0f, 0.9f, 0.9f, 0.0f}, RED);
+	struct Primitive tri  = prim_new(PRIMITIVE_TRIANGLE, (float[]){ 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, -0.5f, 0.0f, 1.0f }, BLUE);
+	// struct Primitive quad = prim_new(PRIMITIVE_QUAD, (float[]){0.3f, 0.0f, 1.0f, 0.3f, 0.3f, 1.0f, 0.0f, 0.3f, 1.0f, 0.0f, 0.0f, 1.0f}, GREEN);
+	// ren_add_prim(&renderer, &line);
 	ren_add_prim(&renderer, &tri);
-	ren_add_prim(&renderer, &quad);
+	// ren_add_prim(&renderer, &quad);
 
 	DEBUG("\n\tBeginning main loop\n"
 	  "-----------------------------------");

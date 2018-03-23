@@ -7,6 +7,7 @@ enum Axis {
 	Z_AXIS,
 };
 
+/* Change to const matI*  */
 #define I2 (float[]){ 1.0f, 0.0f, \
                       0.0f, 1.0f, }
 #define I3 (float[]){ 1.0f, 0.0f, 0.0f, \

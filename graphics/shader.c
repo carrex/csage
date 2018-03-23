@@ -75,7 +75,9 @@ int32 shader_get_uniform(struct Shader* shader, char* name)
 void shader_set_vec4(struct Shader* shader, char* name, float* vec)
 {
     int32 loc = shader_get_uniform(shader, name);
-    ASSERT(!(loc < 0), false, "[GFX] Shader uniform \"%s\" not active", name);
+    if (loc < 0)
+        ERROR("[GFX] Shader uniform \"%s\" not active", name);
+
     glUseProgram(shader->program);
     glUniform4fv(loc, 1, vec);
 }
@@ -83,7 +85,9 @@ void shader_set_vec4(struct Shader* shader, char* name, float* vec)
 void _shader_set_mat4(struct Shader* shader, char* name, float* mat)
 {
     int32 loc = shader_get_uniform(shader, name);
-    ASSERT(!(loc < 0), false, "[GFX] Shader uniform \"%s\" not active", name);
+    if (loc < 0)
+        ERROR("[GFX] Shader uniform \"%s\" not active", name);
+
     glUseProgram(shader->program);
     glUniformMatrix4fv(loc, 1, GL_TRUE, mat);
 }

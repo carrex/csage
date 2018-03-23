@@ -7,9 +7,10 @@ enum Projection {
 };
 
 struct Camera {
+	enum Projection projection;
 	Vec3D pos;
 	Vec3D front, up, right, worldup;
-	float yaw, pitch;
+	float yaw, pitch; // In degrees
 	float speed;
 	Mat4x4 proj, view;
 };

@@ -56,8 +56,11 @@ void _mat_multiply(float* mat1, float* mat2, float* out, uint8 dim1, uint8 dim2)
 /* Only works for 4x4 matrices */
 void _mat_translate(float* mat, float* vec, uint8 dim)
 {
-	for (uint8 i = 0; i < dim - 1; i++)
-		mat[12 + i] = vec[i];
+	mat[12] = vec[0];
+	mat[13] = vec[1];
+	mat[14] = vec[2];
+	// for (uint8 i = 0; i < dim - 1; i++)
+		// mat[12 + i] = vec[i];
 }
 
 /* Only works for 4x4 matrices */

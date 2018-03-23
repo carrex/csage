@@ -129,3 +129,4 @@ float vec_triple(Vec3D v1, Vec3D v2, Vec3D v3)
 
 	return vec_dot_3d(tmp, v3);
 }
+/*********************************************************/
