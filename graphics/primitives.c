@@ -11,7 +11,7 @@ struct Primitive prim_new(enum PrimitiveType type, float* vertices, Vec4D colour
 {
     struct Primitive prim = {
         .vcount   = type,
-        .vertices = rm_malloc_floats(type * 3, vertices),
+        .vertices = rm_malloc_floats(3*type, vertices),
     };
     vec_copy_4d(prim.colour, colour);
 
@@ -23,7 +23,7 @@ struct Primitive prim_new(enum PrimitiveType type, float* vertices, Vec4D colour
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, 3*type*sizeof(float), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+    glVertexAttribPointer(0, type, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     switch (type) {

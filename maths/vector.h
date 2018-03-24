@@ -1,11 +1,6 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-/* TODO:
- * * Graphical tests
- * * Cleanup macros
- */
-
 typedef float Vec2D[2];
 typedef float Vec3D[3];
 typedef float Vec4D[4];

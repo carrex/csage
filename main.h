@@ -14,7 +14,6 @@ struct Config {
 SDL_Window* window;
 SDL_GLContext context;
 
-void handle_events(void);
 bool load_config(void);
 void quit(void);
 
