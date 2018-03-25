@@ -1,6 +1,10 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#define VEC2D_ZERO { 0.0f, 0.0f }
+#define VEC3D_ZERO { 0.0f, 0.0f, 0.0f }
+#define VEC4D_ZERO { 0.0f, 0.0f, 0.0f, 0.0f }
+
 typedef float Vec2D[2];
 typedef float Vec3D[3];
 typedef float Vec4D[4];
@@ -37,9 +41,9 @@ void vec_div_2d(Vec2D v, float s);
 void vec_div_3d(Vec3D v, float s);
 void vec_div_4d(Vec4D v, float s);
 #define vec_norm(v) VEC_EXT(v, norm, v)
-void vec_norm_2d(Vec2D v);
-void vec_norm_3d(Vec3D v);
-void vec_norm_4d(Vec4D v);
+void vec_normal_2d(Vec2D v);
+void vec_normal_3d(Vec3D v);
+void vec_normal_4d(Vec4D v);
 #define vec_mag(v) VEC_EXT(v, mag, v)
 float vec_mag_2d(Vec2D v);
 float vec_mag_3d(Vec3D v);
@@ -65,5 +69,6 @@ void vec_rot3d(Vec3D v, float rad, Vec3D axis);
 // #define vec_cross(out, v1, v2) VEC_EXT(out, cross, out, v1, v2)
 void   vec_cross(Vec3D out, Vec3D v1, Vec3D v2);
 float vec_triple(Vec3D v1, Vec3D v2, Vec3D v3);
+void vec_difference_3d(float* v, float* u, float* w); // v = u - w
 
 #endif

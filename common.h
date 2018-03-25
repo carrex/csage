@@ -8,8 +8,16 @@
 
 #include <GL/glew.h>
 
-/**
- *  +------------------------------------------+
+enum Direction {
+	DIR_RIGHT,
+	DIR_LEFT,
+	DIR_UP,
+	DIR_DOWN,
+	DIR_FORWARD,
+	DIR_BACKWARD,
+};
+
+/*  +------------------------------------------+
  *  |           Integral Types Chart           |
  *  +----------+--------+----------------------+
  *  |   Type   |  Bits  |   Range (approx.)    |

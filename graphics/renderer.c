@@ -31,8 +31,6 @@ void ren_add_prim(struct Renderer* ren, struct Primitive* prim)
 
 void ren_draw(struct Renderer* ren)
 {
-	cam_calc_view(ren->cam);
-	cam_calc_proj(ren->cam);
 	for (uint16 i = 0; ren->prims[i]; i++) {
 		glUseProgram(ren->primshader->program);
 		shader_set_vec4(ren->primshader, "colour", ren->prims[i]->colour);
@@ -40,7 +38,7 @@ void ren_draw(struct Renderer* ren)
 		shader_set_mat4(ren->primshader, "view",  (float[])I4);
 		shader_set_mat4(ren->primshader, "proj",  (float[])I4);
 		shader_set_mat4(ren->primshader, "view", ren->cam->view);
-		shader_set_mat4(ren->primshader, "proj", ren->cam->proj);
+		// shader_set_mat4(ren->primshader, "proj", ren->cam->proj);
 		glBindVertexArray(ren->prims[i]->vao);
 
 		glDrawArrays(ren->prims[i]->mode, 0, ren->prims[i]->vcount);

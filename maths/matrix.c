@@ -12,11 +12,52 @@ void mat_print(float* a, uint8 dim)
 	}
 }
 
-void mat_copy(float* out, float* a, uint8 dim)
+// void mat_new_orthogonal(float* a)
+// {
+
+// }
+
+/* https://stackoverflow.com/questions/1638355/function-for-perspective-projection-of-a-matrix-in-c */
+void mat_new_perspective(float* a, float fov, float aspect, float near, float far)
+{
+	float sz = (far + near) / (far - near);
+	float sy = (float)(1.0 / tan(fov/2.0));
+	float sx = sy / aspect;
+
+	mat_copy(a, (float[])I4, 4);
+	a[0]  = sx;
+	a[5]  = sy;
+	a[10] = sz;
+	a[11] = (2.0f*near*far) / (near - far);
+	a[14] = -1.0f;
+	a[15] =  0.0f;
+}
+
+/* https://stackoverflow.com/questions/349050/calculating-a-lookat-matrix */
+void mat_new_lookat(float* a, float* pos, float* up, float* eye)
+{
+	float x[3], y[3], z[3], wx, wy, wz;
+	vec_difference_3d(z, pos, eye);
+	vec_cross(x, up, z);
+	vec_cross(y, z, x);
+	wx = -vec_dot_3d(x, eye);
+	wy = -vec_dot_3d(y, eye);
+	wz = -vec_dot_3d(z, eye);
+
+	vec_normal_3d(x);
+	vec_normal_3d(y);
+	vec_normal_3d(z);
+	mat_copy(a, (float[]){ x[0], y[0], z[0], 0.0f,
+	                       x[1], y[1], z[1], 0.0f,
+	                       x[2], y[2], z[2], 0.0f,
+	                       wx  , wy  , wz  , 1.0f, }, 4);
+}
+
+void mat_copy(float* a, float* b, uint8 dim)
 {
 	for (uint8 j = 0; j < dim; j++)
 		for (uint8 i = 0; i < dim; i++)
-			out[j*dim + i] = a[j*dim + i];
+			a[j*dim + i] = b[j*dim + i];
 }
 
 void mat_transpose(float* a, uint8 dim)
@@ -80,9 +121,6 @@ void mat_translate(float* out, float* v, uint8 dim)
 
 void mat_rotate(float* out, float angle, uint8 dim, enum Axis axis)
 {
-	if (dim != 4)
-		ERROR("dim(%d) must be 4", dim);
-
 	float sina = (float)sin(angle);
 	float cosa = (float)cos(angle);
 	switch (axis) {

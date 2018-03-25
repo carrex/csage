@@ -9,6 +9,12 @@
 #include "matrix.h"
 #include "quaternion.h"
 
+/* Abbreviations:
+ *  * Matrices    -> a, b, c
+ *  * Vectors     -> v, u, w
+ *  * Quaternions -> q, p, r
+ */
+
 #define PI 3.14159265358979
 #define E  2.71828182845904
 

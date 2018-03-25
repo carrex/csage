@@ -1,78 +1,136 @@
-#include <math.h>
+#include <stdio.h>
 
-#include "quaternion.h"
+#include "maths.h"
 
-void quat_new_versor(float* out, float x, float y, float z, float angle)
+void quat_print(float* q)
 {
-	float sina = (float)sin(angle/2.0);
-	out[0] = sina * x;
-	out[1] = sina * y;
-	out[2] = sina * z;
-	out[3] = (float)cos(angle/2.0);
+	float mag   = quat_magnitude(q);
+	float angle = degrees(quat_angle(q));
+	printf("[Quaternion(%.2f|%.2f*): %.2f|%.2f|%.2f|%.2f]\n", mag, angle, q[0], q[1], q[2], q[3]);
 }
 
-#define x  (quat[0])
-#define y  (quat[1])
-#define z  (quat[2])
-#define w  (quat[3])
-#define x1 (quat1[0])
-#define y1 (quat1[1])
-#define z1 (quat1[2])
-#define w1 (quat1[3])
-#define x2 (quat2[0])
-#define y2 (quat2[1])
-#define z2 (quat2[2])
-#define w2 (quat2[3])
-
-void quat_normalise(float* quat)
+void quat_new_versor(float* q, float w, float x, float y, float z)
 {
-	float mag = (float)sqrt(x*x + y*y + z*z + w*w);
-	quat[0] = x/mag;
-	quat[1] = y/mag;
-	quat[2] = z/mag;
-	quat[3] = w/mag;
+	float sina = (float)sin(w/2.0f);
+	q[0] = (float)cos(w/2.0f);
+	q[1] = sina * x;
+	q[2] = sina * y;
+	q[3] = sina * z;
+
+	quat_normalise(q);
 }
 
-void quat_mul(float* out, float* quat1, float* quat2)
+void quat_new_versor_v(float* q, float w, float* v)
 {
-	out[0] = x1*y2 + y1*x2 - z1*w2 + w1*z2;
-	out[1] = x1*z2 + y1*w2 + z1*x2 - w1*y2;
-	out[2] = x1*w2 - y1*z2 + z1*y2 + w1*x2;
-	out[3] = x1*x2 - y1*y2 - z1*z2 - w1*w2;
+	quat_new_versor(q, w, v[0], v[1], v[2]);
 }
 
-void quat_to_matrix(float* quat, float* mat)
+void quat_copy(float* q, float* p)
 {
-	mat[0]  = 1.0f - 2.0f*y*y - 2.0f*z*z;
-	mat[1]  =        2.0f*x*y - 2.0f*w*z;
-	mat[2]  =        2.0f*x*z + 2.0f*w*x;
-	mat[3]  = 0.0f;
-
-	mat[4]  =        2.0f*x*y + 2.0f*w*z;
-	mat[5]  = 1.0f - 2.0f*x*x - 2.0f*z*z;
-	mat[6]  =        2.0f*y*z - 2.0f*w*x;
-	mat[7]  = 0.0f;
-
-	mat[8]  =        2.0f*x*z - 2.0f*w*y;
-	mat[9]  =        2.0f*y*z + 2.0f*w*x;
-	mat[10] = 1.0f - 2.0f*x*x - 2.0f*y*y;
-	mat[11] = 0.0f;
-
-	mat[12] = w;
-	mat[13] = w;
-	mat[14] = w;
-	mat[15] = 1.0f;
+	quat_normalise(q);
+	p[0] = q[0];
+	p[1] = q[1];
+	p[2] = q[2];
+	p[3] = q[3];
 }
 
-#undef x
-#undef y
-#undef z
-#undef w
-#undef x1
-#undef y1
-#undef z1
-#undef w1
-#undef x2
-#undef y2
-#undef z2
-#undef w2
+float quat_angle(float* q)
+{
+	return (float)(2.0*acos(q[0]));
+}
+
+float quat_magnitude(float* q)
+{
+	return (float)sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+}
+
+void quat_normalise(float* q)
+{
+	float mag = quat_magnitude(q);
+	if (mag > (1.0f + QUAT_NORM_EPSILON) || mag < (1.0f - QUAT_NORM_EPSILON)) {
+		q[0] /= mag;
+		q[1] /= mag;
+		q[2] /= mag;
+		q[3] /= mag;
+	}
+}
+
+void quat_conjugate(float* q, float* p)
+{
+	p[0] =  q[0];
+	p[1] = -q[1];
+	p[2] = -q[2];
+	p[3] = -q[3];
+}
+
+void quat_multiply(float* q, float* p)
+{
+	p[0] = p[0]*q[0] - p[1]*q[1] - p[2]*q[2] - p[3]*q[3];
+	p[1] = p[0]*q[1] + p[1]*q[0] - p[2]*q[3] + p[3]*q[2];
+	p[2] = p[0]*q[2] + p[1]*q[3] + p[2]*q[0] - p[3]*q[1];
+	p[3] = p[0]*q[3] - p[1]*q[2] + p[2]*q[1] + p[3]*q[0];
+	quat_normalise(p);
+}
+
+void quat_multiply_qv(float* q, float* v)
+{
+	float p[4];
+	quat_new_versor_v(p, 0.0f, v);
+	quat_multiply(q, p);
+	quat_to_vector(p, v);
+}
+
+void quat_multiply_vq(float* v, float* q)
+{
+	float p[4], tmp[4];
+	quat_new_versor_v(p, 0.0f, v);
+	quat_copy(q, tmp);
+	quat_multiply(p, tmp);
+	quat_to_vector(tmp, v);
+}
+
+void quat_rotate(float* q, float* p)
+{
+	float qc[4];
+	quat_conjugate(q, qc);
+	quat_multiply(q, p);
+	quat_multiply(p, qc);
+}
+
+void quat_rotate_v(float* q, float* v)
+{
+	float qc[4];
+	quat_conjugate(q, qc);
+	quat_multiply_qv(q, v);
+	quat_multiply_vq(v, qc);
+}
+
+void quat_to_vector(float* q, float* v)
+{
+	v[0] = q[1];
+	v[1] = q[2];
+	v[2] = q[3];
+}
+
+void quat_to_matrix(float* q, float* a)
+{
+	a[0]  = 1.0f - 2.0f*q[2]*q[2] - 2.0f*q[3]*q[3];
+	a[1]  =        2.0f*q[1]*q[2] - 2.0f*q[0]*q[3];
+	a[2]  =        2.0f*q[1]*q[3] + 2.0f*q[0]*q[1];
+	a[3]  = 0.0f;
+
+	a[4]  =        2.0f*q[1]*q[2] + 2.0f*q[0]*q[3];
+	a[5]  = 1.0f - 2.0f*q[1]*q[1] - 2.0f*q[3]*q[3];
+	a[6]  =        2.0f*q[2]*q[3] - 2.0f*q[0]*q[1];
+	a[7]  = 0.0f;
+
+	a[8]  =        2.0f*q[1]*q[3] - 2.0f*q[0]*q[2];
+	a[9]  =        2.0f*q[2]*q[3] + 2.0f*q[0]*q[1];
+	a[10] = 1.0f - 2.0f*q[1]*q[1] - 2.0f*q[2]*q[2];
+	a[11] = 0.0f;
+
+	a[12] = q[0];
+	a[13] = q[0];
+	a[14] = q[0];
+	a[15] = 1.0f;
+}

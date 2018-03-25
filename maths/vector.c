@@ -29,9 +29,9 @@ void vec_div_2d(Vec2D v, float s) { v[0] /= s;	v[1] /= s; }
 void vec_div_3d(Vec3D v, float s) { v[0] /= s;	v[1] /= s; v[2] /= s; }
 void vec_div_4d(Vec4D v, float s) { v[0] /= s;	v[1] /= s; v[2] /= s; v[3] /= s; }
 /*********************************************************/
-void vec_norm_2d(Vec2D v) { vec_div_2d(v, vec_mag_2d(v)); }
-void vec_norm_3d(Vec3D v) { vec_div_3d(v, vec_mag_3d(v)); }
-void vec_norm_4d(Vec4D v) { vec_div_4d(v, vec_mag_4d(v)); }
+void vec_normal_2d(Vec2D v) { vec_div_2d(v, vec_mag_2d(v)); }
+void vec_normal_3d(Vec3D v) { vec_div_3d(v, vec_mag_3d(v)); }
+void vec_normal_4d(Vec4D v) { vec_div_4d(v, vec_mag_4d(v)); }
 /*********************************************************/
 float vec_mag_2d(Vec2D v) { return (float)sqrt(sq(v[0]) + sq(v[1])); }
 float vec_mag_3d(Vec3D v) { return (float)sqrt(sq(v[0]) + sq(v[1]) + sq(v[2])); }
@@ -130,3 +130,9 @@ float vec_triple(Vec3D v1, Vec3D v2, Vec3D v3)
 	return vec_dot_3d(tmp, v3);
 }
 /*********************************************************/
+void vec_difference_3d(float* v, float* u, float* w)
+{
+	v[0] = u[0] - w[0];
+	v[1] = u[1] - w[1];
+	v[2] = u[2] - w[2];
+}
