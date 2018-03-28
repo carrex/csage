@@ -10,6 +10,7 @@
 #include "shader.h"
 #include "texture.h"
 #include "primitives.h"
+#include "sprite.h"
 #include "camera.h"
 #include "renderer.h"
 

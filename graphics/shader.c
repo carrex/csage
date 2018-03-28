@@ -19,7 +19,7 @@ struct Shader shader_new(char* vssrc, char* fssrc)
     glAttachShader(shader.program, shader.fshader);
     glLinkProgram(shader.program);
 
-    DEBUG("[GFX] Shader program created");
+    DEBUG("[GFX] Shader program created ");
     DEBUG_GL();
     return shader;
 }
@@ -37,7 +37,7 @@ uint32 shader_new_vshader(const char* src)
         DEBUG("[GFX] Vertex shader compiled");
         DEBUG(slog);
     } else {
-        ERROR("[GFX] Vertex shader failed to compile%s", slog);
+        ERROR("[GFX] Vertex shader failed to compile: %s", slog);
         DEBUG("%s\n", src);
     }
 
@@ -58,7 +58,7 @@ uint32 shader_new_fshader(const char* src)
         DEBUG("[GFX] Fragment shader compiled");
         DEBUG(slog);
     } else {
-        ERROR("[GFX] Fragment shader failed to compile%s", slog);
+        ERROR("[GFX] Fragment shader failed to compile: %s", slog);
         DEBUG("%s", src);
     }
 
@@ -80,6 +80,7 @@ void shader_set_vec4(struct Shader* shader, char* name, float* vec)
 
     glUseProgram(shader->program);
     glUniform4fv(loc, 1, vec);
+    DEBUG_GL();
 }
 
 void shader_set_mat4(struct Shader* shader, char* name, float* mat)
@@ -89,5 +90,17 @@ void shader_set_mat4(struct Shader* shader, char* name, float* mat)
         ERROR("[GFX] Shader uniform \"%s\" not active", name);
 
     glUseProgram(shader->program);
-    glUniformMatrix4fv(loc, 1, GL_TRUE, mat);
+    glUniformMatrix4fv(loc, 1, GL_FALSE, mat);
+    DEBUG_GL();
+}
+
+void shader_set_texture(struct Shader* shader, char* name, int32 tex)
+{
+    int32 loc = shader_get_uniform(shader, name);
+    if (loc < 0)
+        ERROR("[GFX] Shader uniform \"%s\" not active", name);
+
+    glUseProgram(shader->program);
+    glUniform1i(loc, tex);
+    DEBUG_GL();
 }

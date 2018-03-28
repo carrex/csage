@@ -1,9 +1,9 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#define VEC2D_ZERO { 0.0f, 0.0f }
-#define VEC3D_ZERO { 0.0f, 0.0f, 0.0f }
-#define VEC4D_ZERO { 0.0f, 0.0f, 0.0f, 0.0f }
+#define VEC2D_ZERO ((float[]){ 0.0f, 0.0f })
+#define VEC3D_ZERO ((float[]){ 0.0f, 0.0f, 0.0f })
+#define VEC4D_ZERO ((float[]){ 0.0f, 0.0f, 0.0f, 0.0f })
 
 typedef float Vec2D[2];
 typedef float Vec3D[3];

@@ -8,7 +8,6 @@
 
 struct Config {
     int16 windoww, windowh;
-    int32 wflags, rflags;
 } config;
 
 SDL_Window* window;

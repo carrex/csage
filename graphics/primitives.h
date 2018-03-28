@@ -13,10 +13,9 @@ struct Primitive {
 	uint8 vcount;
 
 	uint32 mode;
-	Vec4D colour;
-	struct Texture* tex;
+	float colour[4];
 };
 
-struct Primitive prim_new(enum PrimitiveType type, float* vertices, Vec4D colour);
+struct Primitive prim_new(enum PrimitiveType type, float* vertices, float* colour);
 
 #endif

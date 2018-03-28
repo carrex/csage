@@ -5,7 +5,7 @@
 void quat_print(float* q)
 {
 	float mag   = quat_magnitude(q);
-	float angle = degrees(quat_angle(q));
+	float angle = (float)degrees(quat_angle(q));
 	printf("[Quaternion(%.2f|%.2f*): %.2f|%.2f|%.2f|%.2f]\n", mag, angle, q[0], q[1], q[2], q[3]);
 }
 

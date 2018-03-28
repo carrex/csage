@@ -16,7 +16,7 @@ OBJDIR  = obj
 SOURCES  := $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/*/*.c)
 INCLUDES := $(wildcard $(SRCDIR)/*.h) 
 OBJECTS  := $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
-LIBS     := -lSDL2 -lSDL2_image -lGL -lGLEW -DGLEW_STATIC
+LIBS     := -lSDL2 -lSDL2_image -lGL -lGLEW -DGLEW_STATIC -lblas
 # -lX11 -lpthread -lXrandr -lXi
 
 all: $(TARGET)

@@ -19,9 +19,8 @@ struct Camera {
 	float near, far;
 };
 
-struct Camera cam_new(void);
-void cam_lookat(struct Camera* cam);
-void cam_move_ortho(struct Camera* cam, double dt, enum Direction dir);
-void cam_rotate_ortho(struct Camera* cam, double dt, enum Direction dir);
+struct Camera camera_new(void);
+void camera_move_ortho(struct Camera* cam, float dt, enum Direction dir);
+void camera_rotate_ortho(struct Camera* cam, float dt, enum Direction dir);
 
 #endif

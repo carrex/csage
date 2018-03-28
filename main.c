@@ -10,7 +10,7 @@
 #include "graphics/graphics.h"
 #include "resourcemanager.h"
 #include "hashmap.h"
-#include "main.h"
+#include "config.h"
 
 /* TODO
  *-->[RM] rm_load_png()?
@@ -49,6 +49,13 @@ int main(int argc, char** argv)
 	if (IMG_Init(IMG_INIT_PNG) == IMG_INIT_PNG)
 		DEBUG("[INIT] SDL_image initialized");
 
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	// glEnable(GL_BLEND);
+	// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	glLineWidth(3.0f);
+	// glPolygoneMode(GL_FRONT_AND_BACK, GL_FILL);
+
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	// glEnable(GL_CULL_FACE);
@@ -57,28 +64,38 @@ int main(int argc, char** argv)
 
 	DEBUG(" ");
 
-	struct Camera cam = cam_new();
-	struct Renderer renderer = ren_new(&cam);
+	struct Camera   camera   = camera_new();
+	struct Renderer renderer = renderer_new(&camera);
 
+	struct Sprite s  = sprite_new((float[]){ 10, 10, 0 }, (float[]){ 32, 32, 0 }, "test.jpg");
+	struct Sprite s2 = sprite_new((float[]){ 0.0, 0.0, 0 }, (float[]){ 0.5, 0.5, 0 }, "test.jpg");
 	// struct Line line = line_new((Vec3D){-0.1f, -0.1f, 0.0f}, (Vec3D){-0.8f, -0.8f, 0.0f}, RED, NULL);
 	// struct Triangle tri = triangle_new((float[]){0.75f, 0.25f, 0.0f, 0.5f, 0.5f, 0.0f, 0.25f, 0.25f, 0.0f}, BLUE, NULL);
 	// struct Quad quad = quad_new((float[]){0.2f, 0.2f, 0.0f, 0.0f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, -0.5f, 0.0f, 0.0f}, GREEN, NULL);
-	struct Primitive xa = prim_new(PRIMITIVE_LINE, (float[]){-1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f}, RED);
-	struct Primitive ya = prim_new(PRIMITIVE_LINE, (float[]){0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f}, GREEN);
-	struct Primitive za = prim_new(PRIMITIVE_LINE, (float[]){0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f}, BLUE);
-	struct Primitive tri = prim_new(PRIMITIVE_TRIANGLE, (float[]){ 0.5f, 0.1f, 0.0f, 0.1f, 1.0f, 0.0f, -0.5f, 0.1f, 0.0f }, WHITE);
-	// struct Primitive quad = prim_new(PRIMITIVE_QUAD, (float[]){0.3f, 0.0f, 1.0f, 0.3f, 0.3f, 1.0f, 0.0f, 0.3f, 1.0f, 0.0f, 0.0f, 1.0f}, GREEN);
-	ren_add_prim(&renderer, &xa);
-	ren_add_prim(&renderer, &ya);
-	ren_add_prim(&renderer, &za);
-	ren_add_prim(&renderer, &tri);
-	// ren_add_prim(&renderer, &quad);
+	struct Primitive xa = prim_new(PRIMITIVE_LINE, (float[]){ -720.0f, 0.0f, 0.0f, 720.0f, 0.0f, 0.0f }, RED);
+	struct Primitive ya = prim_new(PRIMITIVE_LINE, (float[]){ 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f }, GREEN);
+	struct Primitive za = prim_new(PRIMITIVE_LINE, (float[]){ 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f }, BLUE);
+	// struct Texture tex = tex_new("tex.jpg");
+	// float tpos[] = { 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f };
+	// struct Primitive tri = prim_new(PRIMITIVE_TRIANGLE, (float[]){ 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -0.5f, 0.0f, 0.0f }, NULL,
+	// 	                            &tex, tpos);
+	// struct Primitive quad1 = prim_new(PRIMITIVE_QUAD, (float[]){0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.0f}, RED);
+	// struct Primitive quad2 = prim_new(PRIMITIVE_QUAD, (float[]){0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 0.0f, 0.5f, 0.0f}, GREEN);
+	// struct Primitive quad3 = prim_new(PRIMITIVE_QUAD, (float[]){0.0f, 0.0f, 0.0f, 0.0f, -0.3f, 0.0f, -0.3f, -0.3f, 0.0f, -0.3f, 0.0f, 0.0f}, BLUE);
+	renderer_add_prim(&renderer, &xa);
+	renderer_add_prim(&renderer, &ya);
+	renderer_add_prim(&renderer, &za);
+	// renderer_add_prim(&renderer, &tri);
+	// renderer_add_prim(&renderer, &quad1);
+	// renderer_add_prim(&renderer, &quad2);
+	// renderer_add_prim(&renderer, &quad3);
+	renderer_add_sprite(&renderer, &s);
+	// renderer_add_sprite(&renderer, &s2);
 
 	DEBUG("\n\tBeginning main loop\n"
 	  "-----------------------------------");
 	uint32 ntime, otime = 0;
-	uint32 bank = 0;
-	double dt;
+	double dt, bank = 0;
 	while (1) {
 		ntime = SDL_GetTicks();
 		dt    = (double)(ntime - otime);
@@ -95,24 +112,16 @@ int main(int argc, char** argv)
 				} else if (event.type == SDL_KEYDOWN) {
 					switch (event.key.keysym.sym) {
 						case SDLK_ESCAPE: quit();
-						// case SDLK_a: cam.pos[0] -= cam.speed * dt; DEBUG("SDLK_a: %f", cam.pos[0]); break;
-						// case SDLK_d: cam.pos[0] += cam.speed * dt; DEBUG("SDLK_d: %f", cam.pos[0]); break;
-						// case SDLK_w: cam.pos[2] -= cam.speed * dt; DEBUG("SDLK_w: %f", cam.pos[2]); break;
-						// case SDLK_s: cam.pos[2] += cam.speed * dt; DEBUG("SDLK_s: %f", cam.pos[2]); break;
-						// case SDLK_LEFT : cam.yaw += cam.speed * dt * 30.0f; DEBUG("SDLK_LEFT: %f", cam.yaw); break;
-						// case SDLK_RIGHT: cam.yaw -= cam.speed * dt * 30.0f; DEBUG("SDLK_RIGHT: %f", cam.yaw); break;
-						// case SDLK_UP   : cam.yaw += cam.speed * dt * 30.0f; DEBUG("SDLK_LEFT: %f", cam.yaw); break;
-						// case SDLK_DOWN : cam.yaw -= cam.speed * dt * 30.0f; DEBUG("SDLK_RIGHT: %f", cam.yaw); break;
-						case SDLK_a: cam_move_ortho(&cam, dt, DIR_LEFT)    ; break;
-						case SDLK_d: cam_move_ortho(&cam, dt, DIR_RIGHT)   ; break;
-						case SDLK_q: cam_move_ortho(&cam, dt, DIR_UP)      ; break;
-						case SDLK_e: cam_move_ortho(&cam, dt, DIR_DOWN)    ; break;
-						case SDLK_w: cam_move_ortho(&cam, dt, DIR_FORWARD) ; break;
-						case SDLK_s: cam_move_ortho(&cam, dt, DIR_BACKWARD); break;
-						case SDLK_LEFT : cam_rotate_ortho(&cam, dt, DIR_LEFT) ; break;
-						case SDLK_RIGHT: cam_rotate_ortho(&cam, dt, DIR_RIGHT); break;
-						case SDLK_UP   : cam_rotate_ortho(&cam, dt, DIR_UP)   ; break;
-						case SDLK_DOWN : cam_rotate_ortho(&cam, dt, DIR_DOWN) ; break;
+						case SDLK_a: camera_move_ortho(&camera, (float)dt, DIR_LEFT)    ; break;
+						case SDLK_d: camera_move_ortho(&camera, (float)dt, DIR_RIGHT)   ; break;
+						case SDLK_q: camera_move_ortho(&camera, (float)dt, DIR_UP)      ; break;
+						case SDLK_e: camera_move_ortho(&camera, (float)dt, DIR_DOWN)    ; break;
+						case SDLK_w: camera_move_ortho(&camera, (float)dt, DIR_FORWARD) ; break;
+						case SDLK_s: camera_move_ortho(&camera, (float)dt, DIR_BACKWARD); break;
+						case SDLK_LEFT : camera_rotate_ortho(&camera, (float)dt, DIR_LEFT) ; break;
+						case SDLK_RIGHT: camera_rotate_ortho(&camera, (float)dt, DIR_RIGHT); break;
+						case SDLK_UP   : camera_rotate_ortho(&camera, (float)dt, DIR_UP)   ; break;
+						case SDLK_DOWN : camera_rotate_ortho(&camera, (float)dt, DIR_DOWN) ; break;
 					}
 				} else if (event.type == SDL_KEYUP) {
 
@@ -120,10 +129,8 @@ int main(int argc, char** argv)
 			}
 		}
 
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		ren_draw(&renderer);
+		renderer_draw(&renderer);
 		SDL_GL_SwapWindow(window);
 
 		// quit();

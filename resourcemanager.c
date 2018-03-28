@@ -11,12 +11,8 @@
 #include "graphics/graphics.h"
 #include "resourcemanager.h"
 
-/* TODO
- * * rm_load_shader()
- * * prevent loading assets more than once (hashmap)
- */
-
-struct Shader* rmshaders[MAX_SHADERS] = {0};
+struct Shader* rmshaders[MAX_SHADERS] = { 0 };
+struct Texture* rmtextures[MAX_TEXTURES] = { 0 };
 char rmpbuf[64];
 size_t rmallocated = 0;
 
@@ -63,12 +59,26 @@ struct Shader* rm_new_shader(char* vssrc, char* fssrc)
 {
     uint8 i = 0;
     while (rmshaders[i]) i++;
-    ASSERT(i <= MAX_SHADERS, false, "[RES] Max shader count already reached");
+    if (i >= MAX_SHADERS)
+        ERROR("[RES] Max shader count already reached");
     rmshaders[i]  = rm_malloc(sizeof(struct Shader));
     *rmshaders[i] = shader_new(vssrc, fssrc);
 
     DEBUG("[RES] New shader created");
     return rmshaders[i];
+}
+
+struct Texture* rm_new_texture(char* fname)
+{
+    uint8 i = 0;
+    while (rmtextures[i]) i++;
+    if (i >= MAX_TEXTURES)
+        ERROR("[RES] Max texture count already reached");
+    glActiveTexture(GL_TEXTURE0);
+    rmtextures[i]  = rm_malloc(sizeof(struct Texture));
+    *rmtextures[i] = tex_new(fname);
+
+    return rmtextures[i];
 }
 
 void* _rm_malloc(size_t bytes, char* file, uint16 line)
