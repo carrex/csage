@@ -49,6 +49,8 @@ int main(int argc, char** argv)
 	if (IMG_Init(IMG_INIT_PNG) == IMG_INIT_PNG)
 		DEBUG("[INIT] SDL_image initialized");
 
+	DEBUG("%s", openblas_get_config());
+
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	// glEnable(GL_BLEND);
 	// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -64,7 +66,7 @@ int main(int argc, char** argv)
 
 	DEBUG(" ");
 
-	struct Camera   camera   = camera_new(128.0f, 100.0f, 67.0f, PROJ_ORTHOGONAL);
+	struct Camera   camera   = camera_new(128.0f, 100.0f, 67.0f, PROJ_PERSPECTIVE);
 	struct Renderer renderer = renderer_new(&camera);
 
 	struct Sprite s  = sprite_new((float[]){  32.0, -32.0, 0 }, (float[]){ 32 , 32 , 0 }, "test.jpg");

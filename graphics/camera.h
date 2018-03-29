@@ -13,7 +13,7 @@ struct Camera {
 	float pos[3], dir[4];
 	float front[3], up[3], right[3];
 	float yaw, pitch;
-	float speed;
+	float mspeed, rspeed;
 	float proj[16], view[16];
 	float fov;
 	float aspect;

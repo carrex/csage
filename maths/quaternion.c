@@ -1,10 +1,8 @@
-#include <stdio.h>
-
 #include "maths.h"
 
 void quat_print(float* q)
 {
-	double m = (double)quat_magnitude(q),
+	double m = (double)quat_mag(q),
 	       a = degrees((double)quat_angle(q)),
 	       w = q[0],
 	       x = q[1],
@@ -13,7 +11,7 @@ void quat_print(float* q)
 	printf("[Quaternion(%.3f|%.3f*): %.3f|%.3f|%.3f|%.3f]\n", m, a, w, x, y, z);
 }
 
-void quat_new_versor(float* q, float w, float x, float y, float z)
+void quat_new(float* q, float w, float x, float y, float z)
 {
 	float sina = (float)sin(w/2.0f);
 	q[0] = (float)cos(w/2.0f);
@@ -24,9 +22,9 @@ void quat_new_versor(float* q, float w, float x, float y, float z)
 	quat_normalise(q);
 }
 
-void quat_new_versor_v(float* q, float w, float* v)
+void quat_new_v(float* q, float w, float* v)
 {
-	quat_new_versor(q, w, v[0], v[1], v[2]);
+	quat_new(q, w, v[0], v[1], v[2]);
 }
 
 void quat_copy(float* q, float* p)
@@ -43,15 +41,15 @@ float quat_angle(float* q)
 	return (float)(2.0*acos(q[0]));
 }
 
-float quat_magnitude(float* q)
+float quat_mag(float* q)
 {
 	return (float)sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
 }
 
 void quat_normalise(float* q)
 {
-	float mag = quat_magnitude(q);
-	if (mag > (1.0f + QUAT_NORM_EPSILON) || mag < (1.0f - QUAT_NORM_EPSILON)) {
+	float mag = quat_mag(q);
+	if (mag > (1.0f + VERSOR_EPSILON) || mag < (1.0f - VERSOR_EPSILON)) {
 		q[0] /= mag;
 		q[1] /= mag;
 		q[2] /= mag;
@@ -67,7 +65,7 @@ void quat_conjugate(float* q, float* p)
 	p[3] = -q[3];
 }
 
-void quat_multiply(float* q, float* p)
+void quat_mul(float* q, float* p)
 {
 	p[0] = p[0]*q[0] - p[1]*q[1] - p[2]*q[2] - p[3]*q[3];
 	p[1] = p[0]*q[1] + p[1]*q[0] - p[2]*q[3] + p[3]*q[2];
@@ -76,37 +74,37 @@ void quat_multiply(float* q, float* p)
 	quat_normalise(p);
 }
 
-void quat_multiply_qv(float* q, float* v)
+void quat_mul_qv(float* q, float* v)
 {
 	float p[4];
-	quat_new_versor_v(p, 0.0f, v);
-	quat_multiply(q, p);
+	quat_new_v(p, 0.0f, v);
+	quat_mul(q, p);
 	quat_to_vector(p, v);
 }
 
-void quat_multiply_vq(float* v, float* q)
+void quat_mul_vq(float* v, float* q)
 {
 	float p[4], tmp[4];
-	quat_new_versor_v(p, 0.0f, v);
+	quat_new_v(p, 0.0f, v);
 	quat_copy(q, tmp);
-	quat_multiply(p, tmp);
+	quat_mul(p, tmp);
 	quat_to_vector(tmp, v);
 }
 
-void quat_rotate(float* q, float* p)
+void quat_rot(float* q, float* p)
 {
 	float qc[4];
 	quat_conjugate(q, qc);
-	quat_multiply(q, p);
-	quat_multiply(p, qc);
+	quat_mul(q, p);
+	quat_mul(p, qc);
 }
 
-void quat_rotate_v(float* q, float* v)
+void quat_rot_v(float* q, float* v)
 {
 	float qc[4];
 	quat_conjugate(q, qc);
-	quat_multiply_qv(q, v);
-	quat_multiply_vq(v, qc);
+	quat_mul_qv(q, v);
+	quat_mul_vq(v, qc);
 }
 
 void quat_to_vector(float* q, float* v)
