@@ -4,9 +4,13 @@
 
 void quat_print(float* q)
 {
-	float mag   = quat_magnitude(q);
-	float angle = (float)degrees(quat_angle(q));
-	printf("[Quaternion(%.2f|%.2f*): %.2f|%.2f|%.2f|%.2f]\n", mag, angle, q[0], q[1], q[2], q[3]);
+	double m = (double)quat_magnitude(q),
+	       a = degrees((double)quat_angle(q)),
+	       w = q[0],
+	       x = q[1],
+	       y = q[2],
+	       z = q[3];
+	printf("[Quaternion(%.3f|%.3f*): %.3f|%.3f|%.3f|%.3f]\n", m, a, w, x, y, z);
 }
 
 void quat_new_versor(float* q, float w, float x, float y, float z)

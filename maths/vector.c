@@ -1,92 +1,121 @@
 #include <stdio.h>
-#include <math.h>
 
-#include "common.h"
 #include "maths.h"
-#include "vector.h"
 
-void vec_print_2d(Vec2D v) { DEBUG("[Vec2D(%.2f): %.2f|%.2f]\n", vec_mag_2d(v), v[0], v[1]); }
-void vec_print_3d(Vec3D v) { DEBUG("[Vec3D(%.2f): %.2f|%.2f|%.2f]\n", vec_mag_3d(v), v[0], v[1], v[2]); }
-void vec_print_4d(Vec4D v) { DEBUG("[Vec4D(%.2f): %.2f|%.2f|%.2f|%.2f]\n", vec_mag_4d(v), v[0], v[1], v[2], v[3]); }
+void vec2_print(float* v)
+{
+	double m = (double)vec2_mag(v),
+	       x = (double)v[0],
+	       y = (double)v[1];
+	printf("[Vec2D(%.3f): %.3f|%.3f]\n", m, x, y);
+}
+
+void vec3_print(float* v)
+{
+	double m = (double)vec3_mag(v),
+	       x = (double)v[0],
+	       y = (double)v[1],
+	       z = (double)v[2];
+	printf("[Vec3D(%.3f): %.3f|%.3f|%.3f]\n", m, x, y, z);
+}
+
+void vec4_print(float* v)
+{
+	double m = (double)vec4_mag(v),
+	       x = (double)v[0],
+	       y = (double)v[1],
+	       z = (double)v[2],
+	       w = (double)v[3];
+	printf("[Vec4D(%.3f): %.3f|%.3f|%.3f|%.3f]\n", m, x, y, z, w);
+}
 /*********************************************************/
-void vec_copy_2d(Vec2D v1, Vec2D v2) { v1[0] = v2[0]; v1[1] = v2[1]; }
-void vec_copy_3d(Vec3D v1, Vec3D v2) { v1[0] = v2[0]; v1[1] = v2[1]; v1[2] = v2[2]; }
-void vec_copy_4d(Vec4D v1, Vec4D v2) { v1[0] = v2[0]; v1[1] = v2[1]; v1[2] = v2[2]; v1[3] = v2[3]; }
+void vec2_normalise(float* v)
+{
+	vec2_scale(v, vec2_mag(v));
+}
+
+void vec3_normalise(float* v)
+{
+	vec3_scale(v, vec3_mag(v));
+}
+
+void vec4_normalise(float* v)
+{
+	vec4_scale(v, vec4_mag(v));
+}
 /*********************************************************/
-void vec_add_2d(Vec2D v1, Vec2D v2) { v1[0] += v2[0]; v1[1] += v2[1]; }
-void vec_add_3d(Vec3D v1, Vec3D v2) { v1[0] += v2[0]; v1[1] += v2[1]; v1[2] += v2[2]; }
-void vec_add_4d(Vec4D v1, Vec4D v2) { v1[0] += v2[0]; v1[1] += v2[1]; v1[2] += v2[2]; v1[3] += v2[3]; }
+float vec2_angle(float* v, float* u)
+{
+	return (float)acos(vec2_dot(v, u) / (vec2_mag(v) * vec2_mag(u)));
+}
+
+float vec3_angle(float* v, float* u)
+{
+	return (float)acos(vec3_dot(v, u) / (vec3_mag(v) * vec3_mag(u)));
+}
+
+float vec4_angle(float* v, float* u)
+{
+	return (float)acos(vec4_dot(v, u) / (vec4_mag(v) * vec4_mag(u)));
+}
 /*********************************************************/
-void vec_sub_2d(Vec2D v1, Vec2D v2) { v1[0] -= v2[0]; v1[1] -= v2[1]; }
-void vec_sub_3d(Vec3D v1, Vec3D v2) { v1[0] -= v2[0]; v1[1] -= v2[1]; v1[2] -= v2[2]; }
-void vec_sub_4d(Vec4D v1, Vec4D v2) { v1[0] -= v2[0]; v1[1] -= v2[1]; v1[2] -= v2[2]; v1[3] -= v2[3]; }
+void vec3_cross(float* v, float* u, float* w)
+{
+	v[0] = (u[1] * w[2]) - (u[2] * w[1]);
+	v[1] = (u[2] * w[0]) - (u[0] * w[2]);
+	v[2] = (u[0] * w[1]) - (u[1] * w[0]);
+}
 /*********************************************************/
-void vec_mul_2d(Vec2D v, float s) { v[0] *= s; v[1] *= s; }
-void vec_mul_3d(Vec3D v, float s) { v[0] *= s; v[1] *= s; v[2] *= s; }
-void vec_mul_4d(Vec4D v, float s) { v[0] *= s; v[1] *= s; v[2] *= s; v[3] *= s; }
+float vec3_triple(float* v, float* u, float* w)
+{
+	float tmp[3];
+	vec3_cross(tmp, v, u);
+
+	return vec3_dot(tmp, w);
+}
 /*********************************************************/
-void vec_div_2d(Vec2D v, float s) { v[0] /= s;	v[1] /= s; }
-void vec_div_3d(Vec3D v, float s) { v[0] /= s;	v[1] /= s; v[2] /= s; }
-void vec_div_4d(Vec4D v, float s) { v[0] /= s;	v[1] /= s; v[2] /= s; v[3] /= s; }
-/*********************************************************/
-void vec_normal_2d(Vec2D v) { vec_div_2d(v, vec_mag_2d(v)); }
-void vec_normal_3d(Vec3D v) { vec_div_3d(v, vec_mag_3d(v)); }
-void vec_normal_4d(Vec4D v) { vec_div_4d(v, vec_mag_4d(v)); }
-/*********************************************************/
-float vec_mag_2d(Vec2D v) { return (float)sqrt(sq(v[0]) + sq(v[1])); }
-float vec_mag_3d(Vec3D v) { return (float)sqrt(sq(v[0]) + sq(v[1]) + sq(v[2])); }
-float vec_mag_4d(Vec4D v) { return (float)sqrt(sq(v[0]) + sq(v[1]) + sq(v[2]) + sq(v[3])); }
-/*********************************************************/
-float vec_dot_2d(Vec2D v1, Vec2D v2) { return v1[0]*v2[0] + v1[1]*v2[1]; }
-float vec_dot_3d(Vec3D v1, Vec3D v2) { return v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2]; }
-float vec_dot_4d(Vec4D v1, Vec4D v2) { return v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2] + v1[3]*v2[3]; }
-/*********************************************************/
-float vec_angle_2d(Vec2D v1, Vec2D v2) { return (float)acos(vec_dot_2d(v1, v2) / (vec_mag_2d(v1) * vec_mag_2d(v2))); }
-float vec_angle_3d(Vec3D v1, Vec3D v2) { return (float)acos(vec_dot_3d(v1, v2) / (vec_mag_3d(v1) * vec_mag_3d(v2))); }
-float vec_angle_4d(Vec4D v1, Vec4D v2) { return (float)acos(vec_dot_4d(v1, v2) / (vec_mag_4d(v1) * vec_mag_4d(v2))); }
-/*********************************************************/
-// void vec_proj_2d(Vec2D v1, Vec2D v2)
+// void vec_proj_2d(float* v, float* u)
 // {
-// 	Vec2D n;
-// 	vec_copy_2d(n, v2);
+// 	float* n;
+// 	vec_copy_2d(n, u);
 // 	vec_norm_2d(n);
 
-// 	float dot = vec_dot_2d(v1, n);
-// 	vec_copy_2d(v1, n);
-// 	vec_mul_2d(v1, dot);
+// 	float dot = vec_dot_2d(v, n);
+// 	vec_copy_2d(v, n);
+// 	vec_mul_2d(v, dot);
 // }
-// void vec_proj_3d(Vec3D v1, Vec3D v2)
+// void vec_proj_3d(float* v, float* u)
 // {
-// 	Vec3D n;
-// 	vec_copy_3d(n, v2);
+// 	float* n;
+// 	vec_copy_3d(n, u);
 // 	vec_norm_3d(n);
 
-// 	float dot = vec_dot_3d(v1, n);
-// 	vec_copy_3d(v1, n);
-// 	vec_mul_3d(v1, dot);
+// 	float dot = vec_dot_3d(v, n);
+// 	vec_copy_3d(v, n);
+// 	vec_mul_3d(v, dot);
 // }
-// void vec_proj_4d(Vec4D v1, Vec4D v2)
+// void vec_proj_4d(float* v, float* u)
 // {
-// 	Vec4D n;
-// 	vec_copy_4d(n, v2);
+// 	float* n;
+// 	vec_copy_4d(n, u);
 // 	vec_norm_4d(n);
 
-// 	float dot = vec_dot_4d(v1, n);
-// 	vec_copy_4d(v1, n);
-// 	vec_mul_4d(v1, dot);
+// 	float dot = vec_dot_4d(v, n);
+// 	vec_copy_4d(v, n);
+// 	vec_mul_4d(v, dot);
 // }
 // /*********************************************************/
-// void vec_scale_2d(Vec2D v, float k, Vec2D n)
+// void vec_scale_2d(float* v, float k, float* n)
 // {
-// 	Vec2D res;
+// 	float* res;
 // 	Mat2x2 scale = { (k - 1)*n[0]*n[0] + 1, (k - 1)*n[0]*n[1]    ,
 // 	                 (k - 1)*n[0]*n[1]    , (k - 1)*n[1]*n[1] + 1, };
 // 	mat_multiply(v, scale, res, 2, 1);
 // 	vec_copy_2d(v, res);
 // }
-// void vec_scale_3d(Vec3D v, float k, Vec3D n)
+// void vec_scale_3d(float* v, float k, float* n)
 // {
-// 	Vec3D res;
+// 	float* res;
 // 	Mat3x3 scale = { (k - 1)*n[0]*n[0] + 1, (k - 1)*n[0]*n[1]    , (k - 1)*n[0]*n[2]    ,
 // 	                 (k - 1)*n[0]*n[1]    , (k - 1)*n[1]*n[1] + 1, (k - 1)*n[1]*n[2]    ,
 // 	                 (k - 1)*n[0]*n[2]    , (k - 1)*n[1]*n[2]    , (k - 1)*n[2]*n[2] + 1, };
@@ -94,17 +123,17 @@ float vec_angle_4d(Vec4D v1, Vec4D v2) { return (float)acos(vec_dot_4d(v1, v2) /
 // 	vec_copy_3d(v, res);
 // }
 // /*********************************************************/
-// void vec_rot2d(Vec2D v, float rad)
+// void vec_rot2d(float* v, float rad)
 // {
-// 	Vec2D res;
+// 	float* res;
 // 	Mat2x2 rot = {  (float)cos(rad), (float)sin(rad),
 // 	               -(float)sin(rad), (float)cos(rad), };
 // 	mat_multiply(v, rot, res, 2, 1);
 // 	vec_copy_2d(v, res);
 // }
-// void vec_rot3d(Vec3D v, float rad, Vec3D n)
+// void vec_rot3d(float* v, float rad, float* n)
 // {
-// 	Vec3D res;
+// 	float* res;
 // 	float cosr = (float)cos(rad);
 // 	float sinr = (float)sin(rad);
 // 	vec_norm_3d(n);
@@ -114,25 +143,3 @@ float vec_angle_4d(Vec4D v1, Vec4D v2) { return (float)acos(vec_dot_4d(v1, v2) /
 // 	mat_multiply(v, rot, res, 3, 1);
 // 	vec_copy_3d(v, res);
 // }
-/*********************************************************/
-void vec_cross(Vec3D out, Vec3D v1, Vec3D v2)
-{
-	out[0] = (v1[1] * v2[2]) - (v1[2] * v2[1]);
-	out[1] = (v1[2] * v2[0]) - (v1[0] * v2[2]);
-	out[2] = (v1[0] * v2[1]) - (v1[1] * v2[0]);
-}
-/*********************************************************/
-float vec_triple(Vec3D v1, Vec3D v2, Vec3D v3)
-{
-	Vec3D tmp;
-	vec_cross(tmp, v1, v2);
-
-	return vec_dot_3d(tmp, v3);
-}
-/*********************************************************/
-void vec_difference_3d(float* v, float* u, float* w)
-{
-	v[0] = u[0] - w[0];
-	v[1] = u[1] - w[1];
-	v[2] = u[2] - w[2];
-}

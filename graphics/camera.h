@@ -9,6 +9,7 @@ enum Projection {
 /* Cleanup required later */
 struct Camera {
 	enum Projection projection;
+	float scalex, scaley, scalez;
 	float pos[3], dir[4];
 	float front[3], up[3], right[3];
 	float yaw, pitch;
@@ -19,7 +20,8 @@ struct Camera {
 	float near, far;
 };
 
-struct Camera camera_new(void);
+struct Camera camera_new(float scalex, float scaley, float fovy, enum Projection proj);
+void camera_update_view(struct Camera* cam);
 void camera_move_ortho(struct Camera* cam, float dt, enum Direction dir);
 void camera_rotate_ortho(struct Camera* cam, float dt, enum Direction dir);
 

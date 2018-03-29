@@ -13,7 +13,7 @@ struct Primitive prim_new(enum PrimitiveType type, float* vertices, float* colou
         .vcount   = type,
         .vertices = rm_malloc_floats(3*type, vertices),
     };
-    vec_copy_4d(prim.colour, colour);
+    vec4_copy(prim.colour, colour);
 
     glGenVertexArrays(1, &prim.vao);
     glBindVertexArray(prim.vao);

@@ -10,7 +10,6 @@ struct Sprite {
 
 struct Sprite sprite_new(float* pos, float* size, char* texture);
 void sprite_move(struct Sprite* sprite, float* vec);
-void sprite_move_to(struct Sprite* sprite, float* pos);
 void sprite_resize(struct Sprite* sprite, float* size);
 
 #endif

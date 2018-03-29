@@ -3,8 +3,7 @@ CC     = gcc
 
 WARNINGS = -Wall -Wextra -Wshadow -Wfloat-equal -Wpointer-arith \
 	-Wstrict-overflow=5 -Werror-implicit-function-declaration \
-	-Wno-missing-braces
-# -Wdouble-promotion
+	-Wno-missing-braces -Wdouble-promotion
 CFLAGS   = -std=c11 -O3 -g -I. $(WARNINGS) -DDEBUGGING
 
 LINKER = gcc -o

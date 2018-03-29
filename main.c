@@ -64,31 +64,31 @@ int main(int argc, char** argv)
 
 	DEBUG(" ");
 
-	struct Camera   camera   = camera_new();
+	struct Camera   camera   = camera_new(128.0f, 100.0f, 67.0f, PROJ_PERSPECTIVE);
 	struct Renderer renderer = renderer_new(&camera);
 
-	struct Sprite s  = sprite_new((float[]){ 10, 10, 0 }, (float[]){ 32, 32, 0 }, "test.jpg");
-	struct Sprite s2 = sprite_new((float[]){ 0.0, 0.0, 0 }, (float[]){ 0.5, 0.5, 0 }, "test.jpg");
+	struct Sprite s  = sprite_new((float[]){  32.0, -32.0, 0 }, (float[]){ 32 , 32 , 0 }, "test.jpg");
+	struct Sprite s2 = sprite_new((float[]){ -1.0 , -1.0 , 0 }, (float[]){ 0.5, 0.5, 0 }, "test.jpg");
 	// struct Line line = line_new((Vec3D){-0.1f, -0.1f, 0.0f}, (Vec3D){-0.8f, -0.8f, 0.0f}, RED, NULL);
 	// struct Triangle tri = triangle_new((float[]){0.75f, 0.25f, 0.0f, 0.5f, 0.5f, 0.0f, 0.25f, 0.25f, 0.0f}, BLUE, NULL);
 	// struct Quad quad = quad_new((float[]){0.2f, 0.2f, 0.0f, 0.0f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, -0.5f, 0.0f, 0.0f}, GREEN, NULL);
-	struct Primitive xa = prim_new(PRIMITIVE_LINE, (float[]){ -720.0f, 0.0f, 0.0f, 720.0f, 0.0f, 0.0f }, RED);
-	struct Primitive ya = prim_new(PRIMITIVE_LINE, (float[]){ 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f }, GREEN);
-	struct Primitive za = prim_new(PRIMITIVE_LINE, (float[]){ 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f }, BLUE);
+	struct Primitive xa = prim_new(PRIMITIVE_LINE, (float[]){ -1280.0f, 0.0f, 0.0f, 1280.0f, 0.0f, 0.0f }, RED);
+	struct Primitive ya = prim_new(PRIMITIVE_LINE, (float[]){ 0.0f, -720.0f, 0.0f, 0.0f, 720.0f, 0.0f }, GREEN);
+	struct Primitive za = prim_new(PRIMITIVE_LINE, (float[]){ 0.0f, 0.0f, -720.0f, 0.0f, 0.0f, 720.0f }, BLUE);
 	// struct Texture tex = tex_new("tex.jpg");
 	// float tpos[] = { 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f };
 	// struct Primitive tri = prim_new(PRIMITIVE_TRIANGLE, (float[]){ 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -0.5f, 0.0f, 0.0f }, NULL,
 	// 	                            &tex, tpos);
-	// struct Primitive quad1 = prim_new(PRIMITIVE_QUAD, (float[]){0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.0f}, RED);
-	// struct Primitive quad2 = prim_new(PRIMITIVE_QUAD, (float[]){0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 0.0f, 0.5f, 0.0f}, GREEN);
-	// struct Primitive quad3 = prim_new(PRIMITIVE_QUAD, (float[]){0.0f, 0.0f, 0.0f, 0.0f, -0.3f, 0.0f, -0.3f, -0.3f, 0.0f, -0.3f, 0.0f, 0.0f}, BLUE);
+	struct Primitive quad1 = prim_new(PRIMITIVE_QUAD, (float[]){0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 50.f, -50.f, 50.f, 50.f, -50.f, 50.f, 0.0f}, RED);
+	struct Primitive quad2 = prim_new(PRIMITIVE_QUAD, (float[]){0.0f, 0.0f, 0.0f, 50.f, 0.0f, 0.0f, 50.f, 50.f, 0.0f, 0.0f, 50.f, 0.0f}, GREEN);
+	struct Primitive quad3 = prim_new(PRIMITIVE_QUAD, (float[]){0.0f, 0.0f, 0.0f, 0.0f, -30.f, 0.0f, -30.f, -30.f, 0.0f, -30.f, 0.0f, 0.0f}, BLUE);
 	renderer_add_prim(&renderer, &xa);
 	renderer_add_prim(&renderer, &ya);
 	renderer_add_prim(&renderer, &za);
 	// renderer_add_prim(&renderer, &tri);
-	// renderer_add_prim(&renderer, &quad1);
-	// renderer_add_prim(&renderer, &quad2);
-	// renderer_add_prim(&renderer, &quad3);
+	renderer_add_prim(&renderer, &quad1);
+	renderer_add_prim(&renderer, &quad2);
+	renderer_add_prim(&renderer, &quad3);
 	renderer_add_sprite(&renderer, &s);
 	// renderer_add_sprite(&renderer, &s2);
 
@@ -101,7 +101,7 @@ int main(int argc, char** argv)
 		dt    = (double)(ntime - otime);
 		otime = ntime;
 		bank += (uint32)dt;
-		dt   *= 1e-3;
+		dt   *= 1.0;
 		while (bank >= LOGIC_FPS) {
 			bank -= LOGIC_FPS;
 

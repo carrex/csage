@@ -7,11 +7,12 @@
 
 struct Sprite sprite_new(float* pos, float* size, char* tex)
 {
-	struct Sprite sprite;
-    matrix_copy(sprite.model, I4, 4);
+	struct Sprite sprite = {
+        .model = { 0 },
+    };
+    mat4_copy(sprite.model, I4A);
     sprite_move(&sprite, pos);
     sprite_resize(&sprite, size);
-    matrix_print(sprite.model, 4);
 
     float vertices[] = {  1.0f,  1.0f, 0.0f, 1.0f, 0.0f,    // top right
                          -1.0f,  1.0f, 0.0f, 0.0f, 0.0f,    // top left
@@ -44,15 +45,10 @@ struct Sprite sprite_new(float* pos, float* size, char* tex)
 
 void sprite_move(struct Sprite* sprite, float* vec)
 {
-    matrix_translate_add(sprite->model, vec);
-}
-
-void sprite_move_to(struct Sprite* sprite, float* pos)
-{
-    matrix_translate(sprite->model, pos);
+    mat4_translate(sprite->model, vec);
 }
 
 void sprite_resize(struct Sprite* sprite, float* size)
 {
-    matrix_scale(sprite->model, size);
+    mat4_new_scale(sprite->model, size);
 }

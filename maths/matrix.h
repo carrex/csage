@@ -11,35 +11,39 @@ enum Axis {
                               0.0f, 0.0f, 0.0f, 0.0f, \
                               0.0f, 0.0f, 0.0f, 0.0f, \
                               0.0f, 0.0f, 0.0f, 0.0f, })
-#define I2 ((float[]){ 1.0f, 0.0f, \
-                       0.0f, 1.0f, })
-#define I3 ((float[]){ 1.0f, 0.0f, 0.0f, \
-                       0.0f, 1.0f, 0.0f, \
-                       0.0f, 0.0f, 1.0f, })
-#define I4 ((float[]){ 1.0f, 0.0f, 0.0f, 0.0f, \
-                       0.0f, 1.0f, 0.0f, 0.0f, \
-                       0.0f, 0.0f, 1.0f, 0.0f, \
-                       0.0f, 0.0f, 0.0f, 1.0f, })
+#define I2 { 1.0f, 0.0f, \
+             0.0f, 1.0f, }
+#define I3 { 1.0f, 0.0f, 0.0f, \
+             0.0f, 1.0f, 0.0f, \
+             0.0f, 0.0f, 1.0f, }
+#define I4 { 1.0f, 0.0f, 0.0f, 0.0f, \
+             0.0f, 1.0f, 0.0f, 0.0f, \
+             0.0f, 0.0f, 1.0f, 0.0f, \
+             0.0f, 0.0f, 0.0f, 1.0f, }
+#define I2A ((float[])I2)
+#define I3A ((float[])I3)
+#define I4A ((float[])I4)
 
-void matrix_print(float* a, uint8 dim);
-void matrix_copy(float* a, float* b, uint8 dim);
+/* CBLAS wrappers */
+#define mat4_copy(a, b) (cblas_scopy(16, b, 1, a, 1))
+/* a = a + xb */
+#define mat4_add(a, b, x) (cblas_saxpy(16, x, b, 1, a, 1))
+#define mat4_scalar_mul(a, s) (cblas_scal(16, s, a, 1))
+#define mat4_vec4_mul(a, v) (cblas_sgemv(CblasRowMajor, CblasNoTrans, 4, 4, 1.0, a, 4, v, 1, 0.0, NULL, 1))
+/* a = b*c */
+#define mat4_mul(a, b, c) (cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, 4, 4, 4, 1.0, b, 4, c, 4, 0.0, a, 4))
 
-void matrix_transpose(float* a, uint8 dim);
-void matrix_multiply(float* a, float* b, float* out, uint8 dim);
-void matrix_multiply_s(float* a, float s, uint8 dim);
-void matrix_multiply_v(float* v, float* a, uint8 dim);
+void mat_print(float* a, uint8 dim);
 
-/* Only for 4x4 matrices */
-// void matrix_orthogonal(float* a);
-void matrix_perspective(float* a, float fov, float aspect, float near, float far);
-void matrix_view(float* a, float* pos, float* front, float* up, float* right);
-void matrix_lookat(float* a, float* pos, float* up, float* eye);
-void matrix_translate(float* a, float* v);
-void matrix_translate_sub(float* a, float* v);
-void matrix_translate_add(float* a, float* v);
-void matrix_scale(float* a, float* v);
-void matrix_rotate(float* a, float angle, enum Axis axis);
+/* `mat*_new_*` do not zero matrices, they only set the appropriate values */
+void mat4_new_scale(float* a, float* v);
+void mat4_new_translate(float* a, float* v);
 
-void matrix_frustum(float* a, float n, float f, float l, float r, float b, float t);
+void mat4_new_perspective(float* a, float aspect, float fov, float znear, float zfar);
+
+/* Vectors are used to change transformation matrices and are not affected
+ */
+void mat4_translate(float* a, float* v);
+void mat4_scale(float* a, float* v);
 
 #endif
