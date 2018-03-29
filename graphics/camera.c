@@ -8,7 +8,7 @@ struct Camera camera_new(float scalex, float scaley, float fovy, enum Projection
 		.projection = proj,
 		.scalex     = scalex,
 		.scaley     = scaley,
-		.scalez     = (float)((scaley / 2.0) * tan(fovy)),
+		.scalez     = scaley / 2.0f * (float)tan(fovy),
 		.speed      = 50.0f,
 		.pitch      = 0.0f,
 		.yaw        = 0.0f,
@@ -16,19 +16,14 @@ struct Camera camera_new(float scalex, float scaley, float fovy, enum Projection
 		.front      = { 0.0f, 0.0f, -1.0f },
 		.up         = { 0.0f, 1.0f,  0.0f },
 		.right      = { 1.0f, 0.0f,  0.0f },
-		.fov        = (float)radians(fovy),
-		.near       = 0.01f,
-		.far        = 1200.0f,
-		.aspect     = scalex / scaley,
+		.view       = { 0 },
+		.proj       = { 0 },
 	};
-	// mat4_copy(cam.view, I4A);
-	// mat4_translate(cam.view, VEC3_VEC3(-cam.pos));
-	// mat4_scale(cam.view, VEC3(1.0f/windoww, 1.0f/windowh, 1.0f));
-	// mat_print(cam.view, 4);
 	camera_update_view(&cam);
-	mat_print(cam.view, 4);
-	mat4_copy(cam.proj, I4A);
-	mat4_new_perspective(cam.proj, cam.aspect, cam.fov, cam.near, cam.far);
+	if (proj == PROJ_PERSPECTIVE)
+		mat4_new_perspective(cam.proj, scalex/scaley, (float)radians(fovy), 0.01f, 1200.0f);
+	else if (proj == PROJ_ORTHOGONAL)
+		mat4_new_orthogonal(cam.proj, 0.01f, 10.0f);
 
 	return cam;
 }

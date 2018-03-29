@@ -20,7 +20,7 @@ struct Camera {
 	float near, far;
 };
 
-struct Camera camera_new(float scalex, float scaley, float fovy, enum Projection proj);
+struct Camera camera_new(float scalex, float scaley, float angle, enum Projection proj);
 void camera_update_view(struct Camera* cam);
 void camera_move_ortho(struct Camera* cam, float dt, enum Direction dir);
 void camera_rotate_ortho(struct Camera* cam, float dt, enum Direction dir);

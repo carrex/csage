@@ -64,7 +64,7 @@ int main(int argc, char** argv)
 
 	DEBUG(" ");
 
-	struct Camera   camera   = camera_new(128.0f, 100.0f, 67.0f, PROJ_PERSPECTIVE);
+	struct Camera   camera   = camera_new(128.0f, 100.0f, 67.0f, PROJ_ORTHOGONAL);
 	struct Renderer renderer = renderer_new(&camera);
 
 	struct Sprite s  = sprite_new((float[]){  32.0, -32.0, 0 }, (float[]){ 32 , 32 , 0 }, "test.jpg");

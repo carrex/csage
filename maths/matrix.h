@@ -40,6 +40,7 @@ void mat4_new_scale(float* a, float* v);
 void mat4_new_translate(float* a, float* v);
 
 void mat4_new_perspective(float* a, float aspect, float fov, float znear, float zfar);
+void mat4_new_orthogonal(float* a, float znear, float zfar);
 
 /* Vectors are used to change transformation matrices and are not affected
  */

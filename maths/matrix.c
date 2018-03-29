@@ -60,3 +60,13 @@ void mat4_new_perspective(float* a, float aspect, float fov, float znear, float 
 	a[14] = -(n2 * zfar) / fn;
 	a[15] = 0.0f;
 }
+
+void mat4_new_orthogonal(float* a, float znear, float zfar)
+{
+    float fn = (zfar - znear);
+    a[0]  =  1.0f;
+    a[5]  =  1.0f;
+    a[10] = -1.0f;
+    a[14] = -(zfar + znear) / fn;
+    a[15] =  1.0f;
+}
