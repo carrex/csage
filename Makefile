@@ -1,106 +1,55 @@
-TARGET = main
-CC     = gcc
+BIN = main
+CC  = gcc
 
 WARNINGS = -Wall -Wextra -Wshadow -Wfloat-equal -Wpointer-arith \
-	-Wstrict-overflow=5 -Werror-implicit-function-declaration \
+	-Wstrict-overflow=5 -Werror-implicit-function-declaration   \
 	-Wno-missing-braces -Wdouble-promotion
-CFLAGS   = -std=c11 -O3 -g -I. $(WARNINGS) -DDEBUGGING
+CFLAGS   = -std=c11 -O0 -g -I. $(WARNINGS) -DDEBUGGING
+LINKER   = gcc -o
+LFLAGS   = -Wall -I. -lm
+DEPFLAGS = -MT $@ -MMD -MP -MF $(OBJDIR)/$*.dep
 
-LINKER = gcc -o
-LFLAGS = -Wall -I. -lm
+SRCDIR = ./
+OBJDIR = ./obj
 
-SRCDIR  = ./
-OBJDIR  = obj
+SRC := $(wildcard $(SRCDIR)/maths/*.c)    \
+       $(wildcard $(SRCDIR)/graphics/*.c) \
+       $(wildcard $(SRCDIR)/*.c)
+OBJ := $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
+LIB := -lSDL2 -lSDL2_image -lGL -lGLEW -DGLEW_STATIC -lopenblas
+DEP := $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.dep)
 
-SOURCES  := $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/*/*.c)
-INCLUDES := $(wildcard $(SRCDIR)/*.h) 
-OBJECTS  := $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
-LIBS     := -lSDL2 -lSDL2_image -lGL -lGLEW -DGLEW_STATIC -lopenblas
-# -lX11 -lpthread -lXrandr -lXi
+PRECOMPILE  = mkdir -p $(@D)
+POSTCOMPILE = 
 
-all: $(TARGET)
-debug: CFLAGS += -O0 -g3 -ggdb -fvar-tracking
-debug: remove all
-strict: CFLAGS += -std=c99 -pedantic -Wunreachable-code -Wconversion -Wstrict-prototypes -Wno-unused-parameter -Wno-empty-body -UDEBUGGING
-strict: remove all
+all: $(BIN)
 
-$(TARGET): $(OBJECTS)
-	@$(LINKER) $@ $(LFLAGS) $(OBJECTS) $(LIBS)
+$(BIN): $(OBJ)
+	@$(LINKER) $@ $(LFLAGS) $(OBJ) $(LIB)
 	@echo "Linking complete"
 
-$(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
-	@mkdir -p $(@D)
-	@$(CC) $(CFLAGS) -c $< -o $@
+$(OBJ): $(OBJDIR)/%.o: $(SRCDIR)/%.c
+	@$(PRECOMPILE)
+	@$(CC) $(DEPFLAGS) $(CFLAGS) -c $< -o $@
+	@$(POSTCOMPILE)
 	@echo "Compiled "$<" successfully"
+
+-include $(DEP)
+$(DEP): $(SRC)
+	@$(CC) $(CFLAGS) $< -MM -MT $(@:.dep=.o) > $@
 
 .PHONEY: clean
 clean:
-	@rm -f $(OBJECTS)
+	@rm -f $(OBJ)
 	@echo "Cleanup complete"
 
 .PHONEY: remove
 remove:	clean
-	@rm -f  $(TARGET)
-	@rm -rf $(OBJDIR)
+	@rm -f $(BIN)
 	@echo "Executable removed"
+	@rm -f $(DEP)
+	@echo "Dependency files removed"
 
 .PHONEY: game
 game: all
-	./$(TARGET)
-
-.PHONEY: gameall
-gameall: remove all
-	./$(TARGET)
-# TARGET = main
-# CC     = gcc
-
-# WARNINGS = -Wall -Wextra -Wshadow -Wfloat-equal -Wpointer-arith \
-# 	-Wstrict-overflow=5 -Werror-implicit-function-declaration \
-# 	-Wno-missing-braces -Wdouble-promotion
-# CFLAGS   = -std=c11 -O3 -g -I. $(WARNINGS) -DDEBUGGING
-
-# LINKER = gcc -o
-# LFLAGS = -Wall -I. -lm
-
-# SRCDIR  = ./
-# OBJDIR  = obj
-
-# SOURCES  := $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/*/*.c)
-# INCLUDES := $(wildcard $(SRCDIR)/*.h) 
-# OBJECTS  := $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
-# LIBS     := -lSDL2 -lSDL2_image -lGL -lGLEW -DGLEW_STATIC -lblas
-# # -lX11 -lpthread -lXrandr -lXi
-
-# all: $(TARGET)
-# debug: CFLAGS += -O0 -g3 -ggdb -fvar-tracking
-# debug: remove all
-# strict: CFLAGS += -std=c99 -pedantic -Wunreachable-code -Wconversion -Wstrict-prototypes -Wno-unused-parameter -Wno-empty-body -UDEBUGGING
-# strict: remove all
-
-# $(TARGET): $(OBJECTS)
-# 	@$(LINKER) $@ $(LFLAGS) $(OBJECTS) $(LIBS)
-# 	@echo "Linking complete"
-
-# $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
-# 	@mkdir -p $(@D)
-# 	@$(CC) $(CFLAGS) -c $< -o $@
-# 	@echo "Compiled "$<" successfully"
-
-# .PHONEY: clean
-# clean:
-# 	@rm -f $(OBJECTS)
-# 	@echo "Cleanup complete"
-
-# .PHONEY: remove
-# remove:	clean
-# 	@rm -f  $(TARGET)
-# 	@rm -rf $(OBJDIR)
-# 	@echo "Executable removed"
-
-# .PHONEY: game
-# game: all
-# 	./$(TARGET)
-
-# .PHONEY: gameall
-# gameall: remove all
-# 	./$(TARGET)
+	./$(BIN)

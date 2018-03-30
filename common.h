@@ -40,12 +40,11 @@ typedef uint64_t uint64;
 
 typedef unsigned int uint;
 
-inline bool starts_with(char* str, char* start)
+static inline bool starts_with(char* str, char* start)
 {
 	for (uint8 i = 0; i < strlen(start); i++)
 		if (str[i] != start[i])
 			return false;
-	// printf("\t%s == %s\n", str, start);
 	return true;
 }
 

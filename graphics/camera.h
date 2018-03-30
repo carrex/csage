@@ -6,7 +6,6 @@ enum Projection {
 	PROJ_PERSPECTIVE,
 };
 
-/* Cleanup required later */
 struct Camera {
 	enum Projection projection;
 	float scalex, scaley, scalez;
