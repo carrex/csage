@@ -20,7 +20,7 @@ struct Camera camera_new(float scalex, float scaley, float fovy, enum Projection
 	};
 	camera_update_view(&cam);
 	if (proj == PROJ_PERSPECTIVE)
-		mat4_new_perspective(cam.proj, scalex/scaley, (float)(radians(fovy)), 0.01f, 1200.0f);
+		mat4_new_perspective(cam.proj, scalex/scaley, (float)(radians((double)fovy)), 0.01f, 1200.0f);
 	else if (proj == PROJ_ORTHOGONAL)
 		mat4_new_orthogonal(cam.proj, 0.01f, 10.0f);
 
@@ -46,33 +46,52 @@ void camera_update_view(struct Camera* cam)
 	mat4_mul(cam->view, trans, rot);
 }
 
-void camera_move_ortho(struct Camera* cam, float dt, enum Direction dir)
+void camera_set_move(bool set, struct Camera* cam, enum Direction dir)
 {
-	float vel = cam->mspeed * dt;
-	switch (dir) {
-		case DIR_RIGHT   : cam->pos[0] += vel; break;
-		case DIR_LEFT    : cam->pos[0] -= vel; break;
-		case DIR_UP      : cam->pos[1] += vel; break;
-		case DIR_DOWN    : cam->pos[1] -= vel; break;
-		case DIR_FORWARD : cam->pos[2] -= vel; break;
-		case DIR_BACKWARD: cam->pos[2] += vel; break;
-		default: ERROR("Invalid Direction");
-	}
+	if (set)
+		cam->movedir = dir;
+	else if (cam->movedir == dir)
+		cam->movedir = DIR_NONE;
+}
+
+void camera_move(struct Camera* cam, float dt)
+{
+	float vel[3];
+	vec3_from_dir(vel, cam->movedir);
+	// vec3_copy(vel, cam->dir);
+	// vec3_scale(vel, cam->mspeed * dt);
+	vec3_add(cam->pos, vel, cam->mspeed * dt);
+
+	// float vel = cam->mspeed * dt;
+	// switch (cam->movedir) {
+	// 	case DIR_RIGHT   : cam->pos[0] += vel; break;
+	// 	case DIR_LEFT    : cam->pos[0] -= vel; break;
+	// 	case DIR_UP      : cam->pos[1] += vel; break;
+	// 	case DIR_DOWN    : cam->pos[1] -= vel; break;
+	// 	case DIR_FORWARD : cam->pos[2] -= vel; break;
+	// 	case DIR_BACKWARD: cam->pos[2] += vel; break;
+	// 	default: ERROR("Invalid Direction");
+	// }
 	camera_update_view(cam);
 }
 
-void camera_rotate_ortho(struct Camera* cam, float dt, enum Direction dir)
+// void camera_rotate(struct Camera* cam, float dt, enum Direction dir)
+// {
+// 	float vel = cam->rspeed / 10.0f * dt;
+// 	float yaw = 0, pitch = 0;
+// 	switch (dir) {
+// 		case DIR_RIGHT: yaw   -= vel; break;
+// 		case DIR_LEFT : yaw   += vel; break;
+// 		case DIR_UP   : pitch -= vel; break;
+// 		case DIR_DOWN : pitch += vel; break;
+// 		default: ERROR("[GFX] Invalid Direction");
+// 	}
+
+// 	camera_update_view(cam);
+// }
+
+void camera_update(struct Camera* cam, float dt)
 {
-	float vel = cam->rspeed / 10.0f * dt;
-	float yaw, pitch;
-	switch (dir) {
-		case DIR_RIGHT: yaw   -= vel; break;
-		case DIR_LEFT : yaw   += vel; break;
-		case DIR_UP   : pitch -= vel; break;
-		case DIR_DOWN : pitch += vel; break;
-		default: ERROR("Invalid Direction");
-	}
-
-	camera_update_view(cam);
+	if (cam->movedir)
+		camera_move(cam, dt);
 }
-

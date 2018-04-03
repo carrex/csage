@@ -9,32 +9,33 @@
 #include "maths/maths.h"
 #include "graphics/graphics.h"
 #include "resourcemanager.h"
-#include "hashmap.h"
+#include "eventmanager.h"
 #include "config.h"
+#include "csage.h"
 
-/* TODO
- *-->[RM] rm_load_png()?
- *-->[FN] flip image in rm_load_image(?)
- *-->[DB] Log file
- *-->[DB] DEBUG_SDL()
- */
+SDL_Window* window;
+SDL_GLContext context;
+struct Renderer renderer;
+struct Camera camera;
 
-int main(int argc, char** argv)
+void csage_init()
 {
-	(void)argc; (void)argv;
 	DEBUG("\n\t=== === === %s === === ===", WINDOW_TITLE);
-	if (load_config())
-		DEBUG("[INIT] Configuration loaded");
+	struct Config config = {
+		.windoww = 1280,
+		.windowh = 720,
+	};
 
 	SDL_Init(SDL_INIT_VIDEO);
-	window = SDL_CreateWindow(WINDOW_TITLE, WINDOW_X, WINDOW_Y, config.windoww, config.windowh, SDL_WINDOW_OPENGL);
+	window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+		                      config.windoww, config.windowh, SDL_WINDOW_OPENGL);
 	if (window)
 		DEBUG("[INIT] SDL initialized");
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	glViewport(0, 0, 1280.0, 720.0);
+	glViewport(0, 0, config.windoww, config.windowh);
 
 	context = SDL_GL_CreateContext(window);
 	if (context)
@@ -64,11 +65,21 @@ int main(int argc, char** argv)
 	// glCullFace(GL_BACK);
 	// glFrontFace(GL_CCW);
 
-	DEBUG(" ");
+	camera   = camera_new(128.0f, 100.0f, 67.0f, PROJ_PERSPECTIVE);
+	renderer = renderer_new(&camera);
 
-	struct Camera   camera   = camera_new(128.0f, 100.0f, 67.0f, PROJ_PERSPECTIVE);
-	struct Renderer renderer = renderer_new(&camera);
+	em_register_key(SDLK_ESCAPE, CB_NONE, (VoidFn)csage_quit, 0, 0, 0);
+	em_register_key(SDLK_w, CB_KDOWN_DATA2, (VoidFn)camera_set_move, 0, (intptr)&camera, DIR_FORWARD);
+	em_register_key(SDLK_a, CB_KDOWN_DATA2, (VoidFn)camera_set_move, 0, (intptr)&camera, DIR_LEFT);
+	em_register_key(SDLK_s, CB_KDOWN_DATA2, (VoidFn)camera_set_move, 0, (intptr)&camera, DIR_BACKWARD);
+	em_register_key(SDLK_d, CB_KDOWN_DATA2, (VoidFn)camera_set_move, 0, (intptr)&camera, DIR_RIGHT);
+	em_register_key(SDLK_q, CB_KDOWN_DATA2, (VoidFn)camera_set_move, 0, (intptr)&camera, DIR_UP);
+	em_register_key(SDLK_e, CB_KDOWN_DATA2, (VoidFn)camera_set_move, 0, (intptr)&camera, DIR_DOWN);
+	// em_register_key(SDLK_RIGHT, (Trigger)camera_set_rotate, 0, &camera, DIR_RIGHT);
+}
 
+void csage_loop()
+{
 	struct Sprite s  = sprite_new((float[]){  32.0, -32.0, 0 }, (float[]){ 32 , 32 , 0 }, "test.jpg");
 	struct Sprite s2 = sprite_new((float[]){ -1.0 , -1.0 , 0 }, (float[]){ 0.5, 0.5, 0 }, "test.jpg");
 	// struct Line line = line_new((Vec3D){-0.1f, -0.1f, 0.0f}, (Vec3D){-0.8f, -0.8f, 0.0f}, RED, NULL);
@@ -92,7 +103,7 @@ int main(int argc, char** argv)
 	renderer_add_prim(&renderer, &quad2);
 	renderer_add_prim(&renderer, &quad3);
 	renderer_add_sprite(&renderer, &s);
-	// renderer_add_sprite(&renderer, &s2);
+	renderer_add_sprite(&renderer, &s2);
 
 	DEBUG("\n\tBeginning main loop\n"
 	  "-----------------------------------");
@@ -102,33 +113,36 @@ int main(int argc, char** argv)
 		ntime = SDL_GetTicks();
 		dt    = (double)(ntime - otime);
 		otime = ntime;
-		bank += (uint32)dt;
+		bank += dt;
 		dt   *= 1.0;
 		while (bank >= LOGIC_FPS) {
 			bank -= LOGIC_FPS;
 
-			SDL_Event event;
-			while (SDL_PollEvent(&event)) {
-				if (event.type == SDL_QUIT) {
-					quit();
-				} else if (event.type == SDL_KEYDOWN) {
-					switch (event.key.keysym.sym) {
-						case SDLK_ESCAPE: quit();
-						case SDLK_a: camera_move_ortho(&camera, (float)dt, DIR_LEFT)    ; break;
-						case SDLK_d: camera_move_ortho(&camera, (float)dt, DIR_RIGHT)   ; break;
-						case SDLK_q: camera_move_ortho(&camera, (float)dt, DIR_UP)      ; break;
-						case SDLK_e: camera_move_ortho(&camera, (float)dt, DIR_DOWN)    ; break;
-						case SDLK_w: camera_move_ortho(&camera, (float)dt, DIR_FORWARD) ; break;
-						case SDLK_s: camera_move_ortho(&camera, (float)dt, DIR_BACKWARD); break;
-						case SDLK_LEFT : camera_rotate_ortho(&camera, (float)dt, DIR_LEFT) ; break;
-						case SDLK_RIGHT: camera_rotate_ortho(&camera, (float)dt, DIR_RIGHT); break;
-						case SDLK_UP   : camera_rotate_ortho(&camera, (float)dt, DIR_UP)   ; break;
-						case SDLK_DOWN : camera_rotate_ortho(&camera, (float)dt, DIR_DOWN) ; break;
-					}
-				} else if (event.type == SDL_KEYUP) {
+			em_update(dt);
+			camera_update(&camera, dt);
 
-				}
-			}
+			// SDL_Event event;
+			// while (SDL_PollEvent(&event)) {
+			// 	if (event.type == SDL_QUIT) {
+			// 		csage_quit(true);
+			// 	} else if (event.type == SDL_KEYDOWN) {
+			// 		switch (event.key.keysym.sym) {
+			// 			// case SDLK_ESCAPE: csage_quit();
+			// 			// case SDLK_a: camera_move_ortho(&camera, (float)dt, DIR_LEFT)    ; break;
+			// 			// case SDLK_d: camera_move_ortho(&camera, (float)dt, DIR_RIGHT)   ; break;
+			// 			// case SDLK_q: camera_move_ortho(&camera, (float)dt, DIR_UP)      ; break;
+			// 			// case SDLK_e: camera_move_ortho(&camera, (float)dt, DIR_DOWN)    ; break;
+			// 			// case SDLK_w: camera_move_ortho(&camera, (float)dt, DIR_FORWARD) ; break;
+			// 			// case SDLK_s: camera_move_ortho(&camera, (float)dt, DIR_BACKWARD); break;
+			// 			// case SDLK_LEFT : camera_rotate_ortho(&camera, (float)dt, DIR_LEFT) ; break;
+			// 			// case SDLK_RIGHT: camera_rotate_ortho(&camera, (float)dt, DIR_RIGHT); break;
+			// 			// case SDLK_UP   : camera_rotate_ortho(&camera, (float)dt, DIR_UP)   ; break;
+			// 			// case SDLK_DOWN : camera_rotate_ortho(&camera, (float)dt, DIR_DOWN) ; break;
+			// 		}
+			// 	} else if (event.type == SDL_KEYUP) {
+
+			// 	}
+			// }
 		}
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -137,22 +151,12 @@ int main(int argc, char** argv)
 
 		// quit();
 	}
-
-	return 0;
 }
 
-bool load_config()
+void csage_quit()
 {
-	config = (struct Config){
-		.windoww = 1280,
-		.windowh = 720,
-	};
+	DEBUG("Exiting...");
 
-	return true;
-}
-
-void quit()
-{
 	IMG_Quit();
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(window);

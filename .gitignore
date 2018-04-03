@@ -1,6 +1,7 @@
 obj/
-gfx/
+assets/
 
 *.sublime-workspace
 *.sublime-project
+TODO
 main

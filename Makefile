@@ -3,7 +3,7 @@ CC  = gcc
 
 WARNINGS = -Wall -Wextra -Wshadow -Wfloat-equal -Wpointer-arith \
 	-Wstrict-overflow=5 -Werror-implicit-function-declaration   \
-	-Wno-missing-braces -Wdouble-promotion
+	-Wno-missing-braces -Wdouble-promotion -Wno-unused-parameter
 CFLAGS   = -std=c11 -O0 -g -I. $(WARNINGS) -DDEBUGGING
 LINKER   = gcc -o
 LFLAGS   = -Wall -I. -lm
@@ -12,7 +12,8 @@ DEPFLAGS = -MT $@ -MMD -MP -MF $(OBJDIR)/$*.dep
 SRCDIR = ./
 OBJDIR = ./obj
 
-SRC := $(wildcard $(SRCDIR)/maths/*.c)    \
+SRC := $(wildcard $(SRCDIR)/util/*.c)     \
+       $(wildcard $(SRCDIR)/maths/*.c)    \
        $(wildcard $(SRCDIR)/graphics/*.c) \
        $(wildcard $(SRCDIR)/*.c)
 OBJ := $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)

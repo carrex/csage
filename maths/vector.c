@@ -29,6 +29,28 @@ void vec4_print(float* v)
 	printf("[Vec4D(%.3f): %.3f|%.3f|%.3f|%.3f]\n", m, x, y, z, w);
 }
 /*********************************************************/
+bool vec2_equal(float* v, float* u)
+{
+	bool v0 = is_equal(v[0], u[0]);
+	bool v1 = is_equal(v[1], u[1]);
+	return v0 && v1;
+}
+bool vec3_equal(float* v, float* u)
+{
+	bool v0 = is_equal(v[0], u[0]);
+	bool v1 = is_equal(v[1], u[1]);
+	bool v2 = is_equal(v[2], u[2]);
+	return v0 && v1 && v2;
+}
+bool vec4_equal(float* v, float* u)
+{
+	bool v0 = is_equal(v[0], u[0]);
+	bool v1 = is_equal(v[1], u[1]);
+	bool v2 = is_equal(v[2], u[2]);
+	bool v3 = is_equal(v[3], u[3]);
+	return v0 && v1 && v2 && v3;
+}
+/*********************************************************/
 void vec2_normalise(float* v)
 {
 	vec2_scale(v, vec2_mag(v));
@@ -72,6 +94,21 @@ float vec3_triple(float* v, float* u, float* w)
 	vec3_cross(tmp, v, u);
 
 	return vec3_dot(tmp, w);
+}
+/*********************************************************/
+void vec3_from_dir(float* v, enum Direction dir)
+{
+	vec3_copy(v, VEC3_ZERO);
+	switch (dir) {
+		case DIR_NONE    : return;
+		case DIR_RIGHT   : v[0] =  1.0f; break;
+		case DIR_LEFT    : v[0] = -1.0f; break;
+		case DIR_UP      : v[1] =  1.0f; break;
+		case DIR_DOWN    : v[1] = -1.0f; break;
+		case DIR_BACKWARD: v[2] =  1.0f; break;
+		case DIR_FORWARD : v[2] = -1.0f; break;
+		default: ERROR("[MATHS] Invalid direction");
+	}
 }
 /*********************************************************/
 // void vec_proj_2d(float* v, float* u)

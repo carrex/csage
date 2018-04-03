@@ -10,7 +10,7 @@
 struct Renderer renderer_new(struct Camera* cam)
 {
 	struct Renderer ren = {
-		.cam          = cam,
+		.camera       = cam,
 		.prims        = { 0 },
 		.sprites      = { 0 },
 		.primshader   = rm_new_shader("primitive.vert", "primitive.frag"),
@@ -37,8 +37,8 @@ void renderer_add_sprite(struct Renderer* ren, struct Sprite* sprite)
 void renderer_draw(struct Renderer* ren)
 {
 	glUseProgram(ren->primshader->program);
-	shader_set_mat4(ren->primshader, "view", ren->cam->view);
-	shader_set_mat4(ren->primshader, "proj", ren->cam->proj);
+	shader_set_mat4(ren->primshader, "view", ren->camera->view);
+	shader_set_mat4(ren->primshader, "proj", ren->camera->proj);
 	for (uint8 i = 0; ren->prims[i]; i++) {
 		shader_set_mat4(ren->primshader, "model" , I4A);
 		shader_set_vec4(ren->primshader, "colour", ren->prims[i]->colour);
@@ -48,8 +48,8 @@ void renderer_draw(struct Renderer* ren)
 	}
 
 	glUseProgram(ren->spriteshader->program);
-	shader_set_mat4(ren->spriteshader, "view" , ren->cam->view);
-	shader_set_mat4(ren->spriteshader, "proj" , ren->cam->proj);
+	shader_set_mat4(ren->spriteshader, "view" , ren->camera->view);
+	shader_set_mat4(ren->spriteshader, "proj" , ren->camera->proj);
 	for (uint8 i = 0; ren->sprites[i]; i++) {
 		shader_set_mat4(ren->spriteshader, "model", ren->sprites[i]->model);
 

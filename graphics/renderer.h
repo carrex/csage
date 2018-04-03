@@ -5,7 +5,7 @@
 #define RENDERER_MAX_SPRITES 16
 
 struct Renderer {
-	struct Camera* cam;
+	struct Camera* camera;
 	
 	struct Primitive* prims[RENDERER_MAX_PRIMITIVES];
 	struct Sprite* sprites[RENDERER_MAX_SPRITES];

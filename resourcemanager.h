@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 
-#define GFX_PATH    "gfx/%s"
+#define GFX_PATH    "assets/gfx/%s"
 #define SHADER_PATH "shaders/%s"
 #define MAX_SHADERS  8
 #define MAX_TEXTURES 8

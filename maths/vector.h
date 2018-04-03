@@ -41,6 +41,9 @@
 void  vec2_print(float* v);
 void  vec3_print(float* v);
 void  vec4_print(float* v);
+bool  vec2_equal(float* v, float* u);
+bool  vec3_equal(float* v, float* u);
+bool  vec4_equal(float* v, float* u);
 void  vec2_normalise(float* v);
 void  vec3_normalise(float* v);
 void  vec4_normalise(float* v);
@@ -49,5 +52,7 @@ float vec3_angle(float* v, float* u);
 float vec4_angle(float* v, float* u);
 void  vec3_cross(float* out, float* v, float* u);
 float vec3_triple(float* v, float* u, float* v3);
+
+void vec3_from_dir(float* v, enum Direction dir);
 
 #endif
