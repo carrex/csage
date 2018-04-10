@@ -6,24 +6,26 @@ WARNINGS = -Wall -Wextra -Wshadow -Wfloat-equal -Wpointer-arith \
 	-Wno-missing-braces -Wdouble-promotion -Wno-unused-parameter
 CFLAGS   = -std=c11 -O0 -g -I. $(WARNINGS) -DDEBUGGING
 LINKER   = gcc -o
-LFLAGS   = -Wall -I. -lm
+LFLAGS   = -Wall -L./lib
 DEPFLAGS = -MT $@ -MMD -MP -MF $(OBJDIR)/$*.dep
 
 SRCDIR = ./
 OBJDIR = ./obj
 
-SRC := $(wildcard $(SRCDIR)/util/*.c)     \
-       $(wildcard $(SRCDIR)/maths/*.c)    \
+SRC := $(wildcard $(SRCDIR)/maths/*.c)    \
+       $(wildcard $(SRCDIR)/util/*.c)     \
        $(wildcard $(SRCDIR)/graphics/*.c) \
        $(wildcard $(SRCDIR)/*.c)
 OBJ := $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
-LIB := -lSDL2 -lSDL2_image -lGL -lGLEW -DGLEW_STATIC -lopenblas
+LIB := -lm -lSDL2 -lSDL2_image -lGL -lGLEW -DGLEW_STATIC -lopenblas -lSOIL2
 DEP := $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.dep)
 
 PRECOMPILE  = mkdir -p $(@D)
 POSTCOMPILE = 
 
 all: $(BIN)
+debug: all
+	gdb ./main
 
 $(BIN): $(OBJ)
 	@$(LINKER) $@ $(LFLAGS) $(OBJ) $(LIB)

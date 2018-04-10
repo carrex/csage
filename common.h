@@ -1,12 +1,15 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
 
 #include <GL/glew.h>
+
+#define GFX_DIR "./assets/gfx/"
 
 enum Direction {
 	DIR_NONE,
@@ -42,6 +45,7 @@ typedef uint64_t uint64;
 typedef unsigned int uint;
 typedef  intptr_t  intptr;
 typedef uintptr_t uintptr;
+typedef ptrdiff_t ptrdiff;
 
 typedef void (*VoidFn)(void);
 
@@ -51,6 +55,8 @@ typedef void (*VoidFn)(void);
 #define SELECT4(_1, _2, _3, _4, ...) _4
 #define SELECT5(_1, _2, _3, _4, _5, ...) _5
 
+#define DEBUG_MALLOC_MIN 64
+
 #define TERM_NORMAL  "\x1B[0m"
 #define TERM_RED     "\x1B[31m"
 #define TERM_GREEN   "\x1B[32m"
@@ -59,19 +65,20 @@ typedef void (*VoidFn)(void);
 #define TERM_MAGENTA "\x1B[35m"
 #define TERM_CYAN    "\x1B[36m"
 #define TERM_WHITE   "\x1B[37m"
-#define DEBUG_COLOUR(args...) (printf(!strncmp(SELECT1(args), "[INIT]"  , 6)? TERM_WHITE  : \
-                                      !strncmp(SELECT1(args), "[RES]"   , 5)? TERM_GREEN  : \
-                                      !strncmp(SELECT1(args), "[GFX]"   , 5)? TERM_BLUE   : \
-                                      !strncmp(SELECT1(args), "[MATHS]" , 7)? TERM_YELLOW : \
-                                      TERM_NORMAL))
+#define DEBUG_COLOUR(args...) (fprintf(stderr, !strncmp(SELECT1(args), "[INIT]" , 6)? TERM_WHITE  : \
+                                               !strncmp(SELECT1(args), "[RES]"  , 5)? TERM_GREEN  : \
+                                               !strncmp(SELECT1(args), "[GFX]"  , 5)? TERM_BLUE   : \
+                                               !strncmp(SELECT1(args), "[MATHS]", 7)? TERM_YELLOW : \
+                                               !strncmp(SELECT1(args), "[MEM]"  , 5)? TERM_MAGENTA: \
+                                               TERM_NORMAL))
 
-#if DEBUGGING
-	#define DEBUG(args...) do {            \
-			if (SELECT1(args)[0]) {        \
-				DEBUG_COLOUR(args);        \
-				printf(args);              \
-				printf("\n" TERM_NORMAL);  \
-			}                              \
+#ifdef DEBUGGING
+	#define DEBUG(args...) do {                    \
+			if (SELECT1(args)[0]) {                \
+				DEBUG_COLOUR(args);                \
+				fprintf(stderr, args);             \
+				fprintf(stderr, "\n" TERM_NORMAL); \
+			}                                      \
 		} while (0)
 	#define ERROR(args...) do {                              \
 			fprintf(stderr, TERM_RED);                       \
@@ -79,13 +86,6 @@ typedef void (*VoidFn)(void);
 			fprintf(stderr, "\n\t%s:%d in %s\n" TERM_NORMAL, \
 				    __FILE__, __LINE__, __func__);           \
 		} while (0)
-	#define ASSERT(ass, exit, args...) do { \
-			if (!(ass)) {                   \
-				ERROR(args);                \
-				if ((exit))                 \
-					abort();                \
-			}                               \
-		} while (0);
 	#define DEBUG_GL() do {                                                                 \
 		GLenum err;                                                                         \
 		while ((err = glGetError()) != GL_NO_ERROR) {                                       \
@@ -104,7 +104,6 @@ typedef void (*VoidFn)(void);
 #else
 	#define DEBUG(...)
 	#define ERROR(...)
-	#define ASSERT(...)
 	#define DEBUG_GL()
 #endif
 
@@ -120,5 +119,11 @@ long long int: "long long int", unsigned long long int: "unsigned long long int"
        void *: "pointer to void",                int *: "pointer to int",         \
       default: "other"))
 
+/* * * * * Memory functions * * * * */
+#define smalloc(x)    (_smalloc(x   , __FILE__, __LINE__, __func__))
+#define scalloc(x, y) (_scalloc(x, y, __FILE__, __LINE__, __func__))
+
+void* _smalloc(uintptr bytes, char* file, uint line, char const* func);
+void* _scalloc(uintptr items, uintptr size, char* file, uint line, char const* func);
 
 #endif

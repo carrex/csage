@@ -1,5 +1,6 @@
 obj/
 assets/
+lib/
 
 *.sublime-workspace
 *.sublime-project

@@ -5,7 +5,7 @@ struct Sprite {
 	float model[16];
 
 	uint32 vao;
-	struct Texture* texture;
+	struct Texture* tex;
 };
 
 struct Sprite sprite_new(float* pos, float* size, char* texture);

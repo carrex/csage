@@ -14,7 +14,7 @@ void em_register_key(SDL_Keycode key, Callback call, VoidFn onevent,
 	uint16 i = 0;
 	while (events[i]) i++;
 
-	struct Event* e = rm_malloc(sizeof(struct Event));
+	struct Event* e = smalloc(sizeof(struct Event));
 	e->key      = key;
 	e->type     = EVENT_KEY;
 	e->count    = count;

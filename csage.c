@@ -75,13 +75,13 @@ void csage_init()
 	em_register_key(SDLK_d, CB_KDOWN_DATA2, (VoidFn)camera_set_move, 0, (intptr)&camera, DIR_RIGHT);
 	em_register_key(SDLK_q, CB_KDOWN_DATA2, (VoidFn)camera_set_move, 0, (intptr)&camera, DIR_UP);
 	em_register_key(SDLK_e, CB_KDOWN_DATA2, (VoidFn)camera_set_move, 0, (intptr)&camera, DIR_DOWN);
-	// em_register_key(SDLK_RIGHT, (Trigger)camera_set_rotate, 0, &camera, DIR_RIGHT);
+	// em_register_key(SDLK_RIGHT, CB_KDOWN_DATA2, (VoidFn)camera_set_rotate, 0, (intptr)&camera, DIR_RIGHT);
 }
 
 void csage_loop()
 {
-	struct Sprite s  = sprite_new((float[]){  32.0, -32.0, 0 }, (float[]){ 32 , 32 , 0 }, "test.jpg");
-	struct Sprite s2 = sprite_new((float[]){ -1.0 , -1.0 , 0 }, (float[]){ 0.5, 0.5, 0 }, "test.jpg");
+	struct Sprite s  = sprite_new((float[]){  32.0, -32.0, 0 }, (float[]){ 32 , 32 , 0 }, GFX_DIR "kitties.tga");
+	// struct Sprite s2 = sprite_new((float[]){ -1.0 , -1.0 , 0 }, (float[]){ 0.5, 0.5, 0 }, ASSET_DIR "test.jpg");
 	// struct Line line = line_new((Vec3D){-0.1f, -0.1f, 0.0f}, (Vec3D){-0.8f, -0.8f, 0.0f}, RED, NULL);
 	// struct Triangle tri = triangle_new((float[]){0.75f, 0.25f, 0.0f, 0.5f, 0.5f, 0.0f, 0.25f, 0.25f, 0.0f}, BLUE, NULL);
 	// struct Quad quad = quad_new((float[]){0.2f, 0.2f, 0.0f, 0.0f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, -0.5f, 0.0f, 0.0f}, GREEN, NULL);
@@ -103,7 +103,7 @@ void csage_loop()
 	renderer_add_prim(&renderer, &quad2);
 	renderer_add_prim(&renderer, &quad3);
 	renderer_add_sprite(&renderer, &s);
-	renderer_add_sprite(&renderer, &s2);
+	// renderer_add_sprite(&renderer, &s2);
 
 	DEBUG("\n\tBeginning main loop\n"
 	  "-----------------------------------");
@@ -149,7 +149,7 @@ void csage_loop()
 		renderer_draw(&renderer);
 		SDL_GL_SwapWindow(window);
 
-		// quit();
+		// csage_quit();
 	}
 }
 

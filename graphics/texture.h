@@ -5,9 +5,10 @@
 
 struct Texture {
     uint32 id;
-    SDL_Surface* img;
+    uint16 w, h;
+    uint8* data;
 };
 
-struct Texture tex_new(char* fname);
+struct Texture* texture_new(char const* fname);
 
 #endif

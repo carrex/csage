@@ -6,8 +6,8 @@ struct HashMap hmap_new(uint32 size)
 {
 	struct HashMap hmap;
 	hmap.size   = size;
-	hmap.keys   = rm_calloc(size, sizeof(size));
-	hmap.values = rm_malloc(size * sizeof(void*));
+	hmap.keys   = scalloc((uintptr)size, sizeof(size));
+	hmap.values = smalloc(size * sizeof(void*));
 
 	return hmap;
 }

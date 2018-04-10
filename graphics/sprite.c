@@ -1,7 +1,10 @@
 #include "GL/glew.h"
 
+#include "lib/SOIL.h"
+
 #include "common.h"
 #include "maths/maths.h"
+#include "graphics/texture.h"
 #include "resourcemanager.h"
 #include "sprite.h"
 
@@ -36,7 +39,7 @@ struct Sprite sprite_new(float* pos, float* size, char* tex)
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)));
 
-    sprite.texture = rm_new_texture(tex);
+    sprite.tex = texture_new(tex);
 
     DEBUG("[GFX] Created new sprite (%s)", tex);
     DEBUG_GL();

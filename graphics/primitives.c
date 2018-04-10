@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "GL/glew.h"
 
 #include "common.h"
@@ -11,8 +13,9 @@ struct Primitive prim_new(enum PrimitiveType type, float* vertices, float* colou
 {
     struct Primitive prim = {
         .vcount   = type,
-        .vertices = rm_malloc_floats(3*type, vertices),
+        .vertices = smalloc((uintptr)type * sizeof(float)),
     };
+    memcpy(prim.vertices, vertices, (uintptr)type * sizeof(float));
     vec4_copy(prim.colour, colour);
 
     glGenVertexArrays(1, &prim.vao);

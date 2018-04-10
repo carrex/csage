@@ -13,8 +13,8 @@ void quat_print(float* q)
 
 void quat_new(float* q, float w, float x, float y, float z)
 {
-	float sina = (float)sin(w/2.0f);
-	q[0] = (float)cos(w/2.0f);
+	float sina = (float)sin(w / 2.0f);
+	q[0] = (float)cos(w / 2.0f);
 	q[1] = sina * x;
 	q[2] = sina * y;
 	q[3] = sina * z;
@@ -38,7 +38,7 @@ void quat_copy(float* q, float* p)
 
 float quat_angle(float* q)
 {
-	return (float)(2.0*acos(q[0]));
+	return (float)(2.0 * acos(q[0]));
 }
 
 float quat_mag(float* q)
@@ -49,7 +49,7 @@ float quat_mag(float* q)
 void quat_normalise(float* q)
 {
 	float mag = quat_mag(q);
-	if (mag > (1.0f + VERSOR_EPSILON) || mag < (1.0f - VERSOR_EPSILON)) {
+	if (!is_equal(mag, 1.0f)) {
 		q[0] /= mag;
 		q[1] /= mag;
 		q[2] /= mag;
@@ -91,7 +91,7 @@ void quat_mul_vq(float* v, float* q)
 	quat_to_vector(tmp, v);
 }
 
-void quat_rot(float* q, float* p)
+void quat_rotate(float* q, float* p)
 {
 	float qc[4];
 	quat_conjugate(q, qc);
@@ -99,13 +99,19 @@ void quat_rot(float* q, float* p)
 	quat_mul(p, qc);
 }
 
-void quat_rot_v(float* q, float* v)
+void quat_rotate_vec(float* q, float* v)
 {
 	float qc[4];
 	quat_conjugate(q, qc);
 	quat_mul_qv(q, v);
 	quat_mul_vq(v, qc);
 }
+
+// void quat_rotate_dir(float* v, enum Direction dir)
+// {
+// 	float q[4];
+
+// }
 
 void quat_to_vector(float* q, float* v)
 {
@@ -116,19 +122,19 @@ void quat_to_vector(float* q, float* v)
 
 void quat_to_matrix(float* q, float* a)
 {
-	a[0]  = 1.0f - 2.0f*q[2]*q[2] - 2.0f*q[3]*q[3];
-	a[1]  =        2.0f*q[1]*q[2] - 2.0f*q[0]*q[3];
-	a[2]  =        2.0f*q[1]*q[3] + 2.0f*q[0]*q[1];
+	a[0]  = 1.0f - 2.0f*q[2]*q[2] - 2.0f*q[3]*q[3]; // 1 - 2y^2 - 2z^2
+	a[1]  =        2.0f*q[1]*q[2] + 2.0f*q[0]*q[3]; //     2xy  + 2wz
+	a[2]  =        2.0f*q[1]*q[3] - 2.0f*q[0]*q[2]; //     2xz  - 2wy
 	a[3]  = 0.0f;
 
-	a[4]  =        2.0f*q[1]*q[2] + 2.0f*q[0]*q[3];
-	a[5]  = 1.0f - 2.0f*q[1]*q[1] - 2.0f*q[3]*q[3];
-	a[6]  =        2.0f*q[2]*q[3] - 2.0f*q[0]*q[1];
+	a[4]  =        2.0f*q[1]*q[2] - 2.0f*q[0]*q[3]; //     2xy  - 2wz
+	a[5]  = 1.0f - 2.0f*q[1]*q[1] - 2.0f*q[3]*q[3]; // 1 - 2x^2 - 2z^2
+	a[6]  =        2.0f*q[2]*q[3] + 2.0f*q[0]*q[1]; //     2yz  + 2wx
 	a[7]  = 0.0f;
 
-	a[8]  =        2.0f*q[1]*q[3] - 2.0f*q[0]*q[2];
-	a[9]  =        2.0f*q[2]*q[3] + 2.0f*q[0]*q[1];
-	a[10] = 1.0f - 2.0f*q[1]*q[1] - 2.0f*q[2]*q[2];
+	a[8]  =        2.0f*q[1]*q[3] + 2.0f*q[0]*q[2]; //     2xz  + 2wy
+	a[9]  =        2.0f*q[2]*q[3] - 2.0f*q[0]*q[1]; //     2yz  - 2wx
+	a[10] = 1.0f - 2.0f*q[1]*q[1] - 2.0f*q[2]*q[2]; // 1 - 2x^2 - 2y^2
 	a[11] = 0.0f;
 
 	a[12] = q[0];
