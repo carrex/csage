@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include <SDL2/SDL.h>
+#include <lib/SDL/SDL.h>
 
 #include "common.h"
 #include "resourcemanager.h"

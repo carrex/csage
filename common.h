@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include <GL/glew.h>
+#include "lib/glew.h"
 
 #define GFX_DIR "./assets/gfx/"
 

@@ -1,6 +1,4 @@
-#include "GL/glew.h"
-
-#include "lib/SOIL.h"
+#include "lib/SOIL2.h"
 
 #include "common.h"
 #include "maths/maths.h"

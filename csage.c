@@ -1,9 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <GL/glew.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <lib/SDL/SDL.h>
 
 #include "common.h"
 #include "maths/maths.h"
@@ -12,6 +10,8 @@
 #include "eventmanager.h"
 #include "config.h"
 #include "csage.h"
+
+#include "game.h"
 
 SDL_Window* window;
 SDL_GLContext context;
@@ -25,6 +25,8 @@ void csage_init()
 		.windoww = 1280,
 		.windowh = 720,
 	};
+
+	NimMain();
 
 	SDL_Init(SDL_INIT_VIDEO);
 	window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -46,9 +48,6 @@ void csage_init()
 	if (glewInit() == GLEW_OK)
 		DEBUG("[INIT] GLEW initialized: version %s", glewGetString(GLEW_VERSION));
 	glGetError(); // Glew bug creates an INVALID_ENUM on init
-
-	if (IMG_Init(IMG_INIT_PNG) == IMG_INIT_PNG)
-		DEBUG("[INIT] SDL_image initialized");
 
 	DEBUG("%s", openblas_get_config());
 
@@ -105,6 +104,8 @@ void csage_loop()
 	renderer_add_sprite(&renderer, &s);
 	// renderer_add_sprite(&renderer, &s2);
 
+	fb();
+
 	DEBUG("\n\tBeginning main loop\n"
 	  "-----------------------------------");
 	uint32 ntime, otime = 0;
@@ -157,7 +158,6 @@ void csage_quit()
 {
 	DEBUG("Exiting...");
 
-	IMG_Quit();
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(window);
 	SDL_Quit();

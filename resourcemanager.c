@@ -2,9 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "GL/glew.h"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <lib/SDL/SDL.h>
 
 #include "common.h"
 #include "maths/maths.h"
@@ -40,21 +38,6 @@ char* rm_load_file_shader(char* fname)
 	sprintf(rmpbuf, SHADER_PATH, fname);
 
 	return rm_load_file(rmpbuf);
-}
-
-SDL_Surface* rm_load_image(char* fname)
-{
-	sprintf(rmpbuf, GFX_PATH, fname);
-	SDL_Surface* img = IMG_Load(rmpbuf);
-	if (!img)
-		ERROR("[RES] Failed to load image: %s", IMG_GetError());
-	else
-		DEBUG("[RES] Image loaded: %s", rmpbuf);
-	/* Not sure how good this is */
-	SDL_SetSurfaceRLE(img, 1);
-	SDL_LockSurface(img);
-
-	return img;
 }
 
 struct Shader* rm_new_shader(char* vssrc, char* fssrc)

@@ -1,6 +1,7 @@
 obj/
 assets/
 lib/
+nimcache/
 
 *.sublime-workspace
 *.sublime-project

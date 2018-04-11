@@ -1,7 +1,5 @@
 #include <string.h>
 
-#include "GL/glew.h"
-
 #include "common.h"
 #include "maths/maths.h"
 #include "shader.h"

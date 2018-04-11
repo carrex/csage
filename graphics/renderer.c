@@ -1,5 +1,3 @@
-#include <GL/glew.h>
-
 #include "common.h"
 #include "maths/maths.h"
 #include "resourcemanager.h"

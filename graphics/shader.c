@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include <GL/glew.h>
-
 #include "common.h"
 #include "maths/maths.h"
 #include "renderer.h"

@@ -1,5 +1,4 @@
-#include <SDL2/SDL.h>
-#include <GL/glew.h>
+#include <lib/SDL/SDL.h>
 
 #include "common.h"
 #include "lib/SOIL2.h"
