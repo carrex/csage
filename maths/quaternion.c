@@ -1,15 +1,22 @@
+#include <math.h>
+
 #include "maths.h"
 
-void quat_print(float* q)
-{
-	double m = (double)quat_mag(q),
-	       a = degrees((double)quat_angle(q)),
-	       w = q[0],
-	       x = q[1],
-	       y = q[2],
-	       z = q[3];
-	printf("[Quaternion(%.3f|%.3f*): %.3f|%.3f|%.3f|%.3f]\n", m, a, w, x, y, z);
-}
+#ifdef DEBUGGING
+	#include <stdio.h>
+	void quat_print(float* q)
+	{
+		double m = (double)quat_mag(q),
+		       a = degrees((double)quat_angle(q)),
+		       w = q[0],
+		       x = q[1],
+		       y = q[2],
+		       z = q[3];
+		printf("[Quaternion(%.3f|%.3f*): %.3f|%.3f|%.3f|%.3f]\n", m, a, w, x, y, z);
+	}
+#else
+	#define quat_print(q)
+#endif
 
 void quat_new(float* q, float w, float x, float y, float z)
 {

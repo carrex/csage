@@ -1,4 +1,4 @@
-#include "lib/SOIL2.h"
+#include "SOIL2.h"
 
 #include "common.h"
 #include "maths/maths.h"

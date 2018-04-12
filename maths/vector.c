@@ -1,49 +1,56 @@
-#include <stdio.h>
-#include <stdbool.h>
+#include <math.h>
 
 #include "maths.h"
+#include "common.h"
 
-void vec2_print(float* v)
-{
-	double m = (double)vec2_mag(v),
-	       x = (double)v[0],
-	       y = (double)v[1];
-	printf("[Vec2D(%.3f): %.3f|%.3f]\n", m, x, y);
-}
+#ifdef DEBUGGING
+	#include <stdio.h>
+	void vec2_print(float* v)
+	{
+		double m = (double)vec2_mag(v),
+		       x = (double)v[0],
+		       y = (double)v[1];
+		printf("[Vec2D(%.3f): %.3f|%.3f]\n", m, x, y);
+	}
 
-void vec3_print(float* v)
-{
-	double m = (double)vec3_mag(v),
-	       x = (double)v[0],
-	       y = (double)v[1],
-	       z = (double)v[2];
-	printf("[Vec3D(%.3f): %.3f|%.3f|%.3f]\n", m, x, y, z);
-}
+	void vec3_print(float* v)
+	{
+		double m = (double)vec3_mag(v),
+		       x = (double)v[0],
+		       y = (double)v[1],
+		       z = (double)v[2];
+		printf("[Vec3D(%.3f): %.3f|%.3f|%.3f]\n", m, x, y, z);
+	}
 
-void vec4_print(float* v)
-{
-	double m = (double)vec4_mag(v),
-	       x = (double)v[0],
-	       y = (double)v[1],
-	       z = (double)v[2],
-	       w = (double)v[3];
-	printf("[Vec4D(%.3f): %.3f|%.3f|%.3f|%.3f]\n", m, x, y, z, w);
-}
+	void vec4_print(float* v)
+	{
+		double m = (double)vec4_mag(v),
+		       x = (double)v[0],
+		       y = (double)v[1],
+		       z = (double)v[2],
+		       w = (double)v[3];
+		printf("[Vec4D(%.3f): %.3f|%.3f|%.3f|%.3f]\n", m, x, y, z, w);
+	}
+#else
+	#define vec2_print(v)
+	#define vec3_print(v)
+	#define vec4_print(v)
+#endif
 /*********************************************************/
-bool vec2_equal(float* v, float* u)
+bool vec2_equal(float* restrict v, float* restrict u)
 {
 	bool v0 = is_equal(v[0], u[0]);
 	bool v1 = is_equal(v[1], u[1]);
 	return v0 && v1;
 }
-bool vec3_equal(float* v, float* u)
+bool vec3_equal(float* restrict v, float* restrict u)
 {
 	bool v0 = is_equal(v[0], u[0]);
 	bool v1 = is_equal(v[1], u[1]);
 	bool v2 = is_equal(v[2], u[2]);
 	return v0 && v1 && v2;
 }
-bool vec4_equal(float* v, float* u)
+bool vec4_equal(float* restrict v, float* restrict u)
 {
 	bool v0 = is_equal(v[0], u[0]);
 	bool v1 = is_equal(v[1], u[1]);
@@ -67,29 +74,29 @@ void vec4_normalise(float* v)
 	vec4_scale(v, vec4_mag(v));
 }
 /*********************************************************/
-float vec2_angle(float* v, float* u)
+float vec2_angle(float* restrict v, float* restrict u)
 {
 	return (float)acos(vec2_dot(v, u) / (vec2_mag(v) * vec2_mag(u)));
 }
 
-float vec3_angle(float* v, float* u)
+float vec3_angle(float* restrict v, float* restrict u)
 {
 	return (float)acos(vec3_dot(v, u) / (vec3_mag(v) * vec3_mag(u)));
 }
 
-float vec4_angle(float* v, float* u)
+float vec4_angle(float* restrict v, float* restrict u)
 {
 	return (float)acos(vec4_dot(v, u) / (vec4_mag(v) * vec4_mag(u)));
 }
 /*********************************************************/
-void vec3_cross(float* v, float* u, float* w)
+void vec3_cross(float* restrict v, float* restrict u, float* restrict w)
 {
 	v[0] = (u[1] * w[2]) - (u[2] * w[1]);
 	v[1] = (u[2] * w[0]) - (u[0] * w[2]);
 	v[2] = (u[0] * w[1]) - (u[1] * w[0]);
 }
 /*********************************************************/
-float vec3_triple(float* v, float* u, float* w)
+float vec3_triple(float* restrict v, float* restrict u, float* restrict w)
 {
 	float tmp[3];
 	vec3_cross(tmp, v, u);
@@ -108,7 +115,6 @@ void vec3_from_dir(float* v, enum Direction dir)
 		case DIR_DOWN    : v[1] = -1.0f; break;
 		case DIR_BACKWARD: v[2] =  1.0f; break;
 		case DIR_FORWARD : v[2] = -1.0f; break;
-		default: ERROR("[MATHS] Invalid direction");
 	}
 }
 /*********************************************************/

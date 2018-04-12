@@ -1,7 +1,7 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <lib/SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 struct Texture {
     uint32 id;

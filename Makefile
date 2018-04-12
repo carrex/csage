@@ -3,16 +3,18 @@ BIN   = main
 # SHLIB = libcsage.so
 CC    = gcc
 
-WARNINGS = -Wall -Wextra -Wshadow -Wfloat-equal -Wpointer-arith  \
-	-Wstrict-overflow=5 -Werror-implicit-function-declaration    \
-	-Wno-missing-braces -Wdouble-promotion -Wno-unused-parameter
-# -Wsuggest-attribute=[pure|const|noreturn|format|cold|malloc]
-CFLAGS   = -std=c11 -O0 -g -I. $(WARNINGS) -DDEBUGGING
-NIMFLAGS = -std=gnu11 -O0 -I. -I./nimcache -I/home/charles/.choosenim/toolchains/nim-0.18.0/lib
+WARNINGS = -Wall -Wextra -Wshadow -Wfloat-equal -Wpointer-arith         \
+	-Wstrict-overflow=5 -Werror-implicit-function-declaration            \
+	-Wno-missing-braces -Wno-unused-parameter -Wsuggest-attribute=pure    \
+	-Wstrict-aliasing -Wsuggest-attribute=format -Wsuggest-attribute=const \
+	-Wsuggest-attribute=noreturn
+# -Wdouble-promotion
+CFLAGS   = -std=c11 -pedantic -O0 -fstrict-aliasing -fstack-protector -g -I. -Ilib/include $(WARNINGS) -DDEBUGGING
+NIMFLAGS = -fasm -I./nimcache -I/home/charles/.choosenim/toolchains/nim-0.18.0/lib
 CFLAGS  += $(NIMFLAGS)
 
 LINKER   = gcc -o
-LFLAGS   = -Wall -L./lib
+LFLAGS   = -Wall -Wl,-O0 -rdynamic -L./lib/lib
 DEPFLAGS = -MT $@ -MMD -MP -MF $(OBJDIR)/$*.dep
 # STFLAGS  = -static-libgcc -static
 # SHFLAGS  = -fPIC
@@ -26,7 +28,7 @@ SRC := $(wildcard $(SRCDIR)/nimcache/*.c) \
        $(wildcard $(SRCDIR)/graphics/*.c) \
        $(wildcard $(SRCDIR)/*.c)
 OBJ := $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
-LIB := -lc -ldl -lm -pthread -lSDL2 -lGL -lGLEW -DGLEW_STATIC -lOpenBLAS -lSOIL2
+LIB := -ldl -lm -lpthread -lSDL2 -lGL -lGLEW -DGLEW_STATIC -lopenblas -lSOIL2
 DEP := $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.dep)
 
 PRECOMPILE  = mkdir -p $(@D)

@@ -1,7 +1,7 @@
 #ifndef RESOURCEMANAGER_H
 #define RESOURCEMANAGER_H
 
-#include <lib/SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #define GFX_PATH    "assets/gfx/%s"
 #define SHADER_PATH "shaders/%s"

@@ -1,6 +1,8 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#include <cblas.h>
+
 enum Axis {
 	X_AXIS,
 	Y_AXIS,
@@ -33,7 +35,7 @@ enum Axis {
 /* a = b*c */
 #define mat4_mul(a, b, c) (cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, 4, 4, 4, 1.0, b, 4, c, 4, 0.0, a, 4))
 
-void mat_print(float* a, uint8 dim);
+void mat_print(float* a, int dim);
 
 /* `mat*_new_*` do not zero matrices, they only set the appropriate values */
 void mat4_new_scale(float* a, float* v);

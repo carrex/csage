@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <lib/SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #include "common.h"
 #include "maths/maths.h"
@@ -18,15 +18,24 @@ SDL_GLContext context;
 struct Renderer renderer;
 struct Camera camera;
 
+int main(int argc, char** argv)
+{
+	(void)argc; (void)argv;
+	NimMain();
+	DEBUG("[INIT] Nim initialized");
+
+	csage_init();
+	init();
+	csage_loop();
+}
+
 void csage_init()
 {
-	DEBUG("\n\t=== === === %s === === ===", WINDOW_TITLE);
-	struct Config config = {
+	DEBUG("\t=== === === %s === === ===", WINDOW_TITLE);
+	struct Config const config = {
 		.windoww = 1280,
 		.windowh = 720,
 	};
-
-	NimMain();
 
 	SDL_Init(SDL_INIT_VIDEO);
 	window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -104,8 +113,6 @@ void csage_loop()
 	renderer_add_sprite(&renderer, &s);
 	// renderer_add_sprite(&renderer, &s2);
 
-	fb();
-
 	DEBUG("\n\tBeginning main loop\n"
 	  "-----------------------------------");
 	uint32 ntime, otime = 0;
@@ -115,46 +122,24 @@ void csage_loop()
 		dt    = (double)(ntime - otime);
 		otime = ntime;
 		bank += dt;
-		dt   *= 1.0;
+		dt   *= 1.0e-3;
 		while (bank >= LOGIC_FPS) {
 			bank -= LOGIC_FPS;
 
 			em_update(dt);
+			update(dt);
 			camera_update(&camera, dt);
-
-			// SDL_Event event;
-			// while (SDL_PollEvent(&event)) {
-			// 	if (event.type == SDL_QUIT) {
-			// 		csage_quit(true);
-			// 	} else if (event.type == SDL_KEYDOWN) {
-			// 		switch (event.key.keysym.sym) {
-			// 			// case SDLK_ESCAPE: csage_quit();
-			// 			// case SDLK_a: camera_move_ortho(&camera, (float)dt, DIR_LEFT)    ; break;
-			// 			// case SDLK_d: camera_move_ortho(&camera, (float)dt, DIR_RIGHT)   ; break;
-			// 			// case SDLK_q: camera_move_ortho(&camera, (float)dt, DIR_UP)      ; break;
-			// 			// case SDLK_e: camera_move_ortho(&camera, (float)dt, DIR_DOWN)    ; break;
-			// 			// case SDLK_w: camera_move_ortho(&camera, (float)dt, DIR_FORWARD) ; break;
-			// 			// case SDLK_s: camera_move_ortho(&camera, (float)dt, DIR_BACKWARD); break;
-			// 			// case SDLK_LEFT : camera_rotate_ortho(&camera, (float)dt, DIR_LEFT) ; break;
-			// 			// case SDLK_RIGHT: camera_rotate_ortho(&camera, (float)dt, DIR_RIGHT); break;
-			// 			// case SDLK_UP   : camera_rotate_ortho(&camera, (float)dt, DIR_UP)   ; break;
-			// 			// case SDLK_DOWN : camera_rotate_ortho(&camera, (float)dt, DIR_DOWN) ; break;
-			// 		}
-			// 	} else if (event.type == SDL_KEYUP) {
-
-			// 	}
-			// }
 		}
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		renderer_draw(&renderer);
 		SDL_GL_SwapWindow(window);
 
-		// csage_quit();
+		csage_quit();
 	}
 }
 
-void csage_quit()
+noreturn void csage_quit()
 {
 	DEBUG("Exiting...");
 

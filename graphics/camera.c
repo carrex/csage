@@ -1,3 +1,4 @@
+#include "common.h"
 #include "maths/maths.h"
 #include "primitives.h"
 #include "camera.h"

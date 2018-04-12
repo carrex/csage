@@ -1,7 +1,7 @@
-#include <lib/SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #include "common.h"
-#include "lib/SOIL2.h"
+#include "SOIL2.h"
 #include "resourcemanager.h"
 #include "texture.h"
 
@@ -20,7 +20,7 @@ struct Texture* texture_new(char const* fname)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex->w, tex->h, 0, GL_RGB, GL_UNSIGNED_BYTE, tex->data);
     glGenerateMipmap(GL_TEXTURE_2D);
 
-    DEBUG("[GFX] Texture \"%s\" created successfully", fname);
+    DEBUG("[GFX] Texture \"%s\" created", fname);
     DEBUG_GL();
     return tex;
 }

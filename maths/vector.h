@@ -1,6 +1,8 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include <cblas.h>
+
 /* Vector expansion macros (for arguments) */
 #define VEC4(x, y, z, w) ((float[]){ x, y, z, w })
 #define VEC4_VEC4(v)     ((float[]){ v[0], v[1], v[2], v[3] })
@@ -41,17 +43,17 @@
 void  vec2_print(float* v);
 void  vec3_print(float* v);
 void  vec4_print(float* v);
-bool  vec2_equal(float* v, float* u);
-bool  vec3_equal(float* v, float* u);
-bool  vec4_equal(float* v, float* u);
+bool  vec2_equal(float* restrict v, float* restrict u);
+bool  vec3_equal(float* restrict v, float* restrict u);
+bool  vec4_equal(float* restrict v, float* restrict u);
 void  vec2_normalise(float* v);
 void  vec3_normalise(float* v);
 void  vec4_normalise(float* v);
-float vec2_angle(float* v, float* u);
-float vec3_angle(float* v, float* u);
-float vec4_angle(float* v, float* u);
-void  vec3_cross(float* out, float* v, float* u);
-float vec3_triple(float* v, float* u, float* v3);
+float vec2_angle(float* restrict v, float* restrict u);
+float vec3_angle(float* restrict v, float* restrict u);
+float vec4_angle(float* restrict v, float* restrict u);
+void  vec3_cross(float* restrict v, float* restrict u, float* restrict w);
+float vec3_triple(float* restrict v, float* restrict u, float* restrict w);
 
 void vec3_from_dir(float* v, enum Direction dir);
 

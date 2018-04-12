@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <lib/SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #include "common.h"
 #include "maths/maths.h"

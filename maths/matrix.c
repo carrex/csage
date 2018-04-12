@@ -1,16 +1,23 @@
-#include "maths.h"
+#include <math.h>
 
-void mat_print(float* a, uint8 dim)
-{
-	printf("Matrix%dx%d:\n", dim, dim);
-	for (uint8 j = 0; j < dim; j++) {
-		printf((j % (dim-1) == 0? "   [": "   |"));
-		for (uint8 i = 0; i < dim; i++) {
-			printf("%6.3f ", (double)a[j*dim + i]);
+#include "matrix.h"
+
+#ifdef DEBUGGING
+	#include <stdio.h>
+	void mat_print(float* a, int dim)
+	{
+		printf("Matrix%dx%d:\n", dim, dim);
+		for (int j = 0; j < dim; j++) {
+			printf((j % (dim-1) == 0? "   [": "   |"));
+			for (int i = 0; i < dim; i++) {
+				printf("%6.3f ", (double)a[j*dim + i]);
+			}
+			printf("\b%s\n", (j % (dim-1) == 0? " ]": " |"));
 		}
-		printf("\b%s\n", (j % (dim-1) == 0? " ]": " |"));
 	}
-}
+#else
+	#define mat_print(a, dim)
+#endif
 
 void mat4_new_scale(float* a, float* v)
 {

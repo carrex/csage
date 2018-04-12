@@ -5,9 +5,10 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdnoreturn.h>
 #include <string.h>
 
-#include "lib/glew.h"
+#include <GL/glew.h>
 
 #define GFX_DIR "./assets/gfx/"
 
@@ -49,11 +50,7 @@ typedef ptrdiff_t ptrdiff;
 
 typedef void (*VoidFn)(void);
 
-#define SELECT1(_1, ...) _1
-#define SELECT2(_1, _2, ...) _2
-#define SELECT3(_1, _2, _3, ...) _3
-#define SELECT4(_1, _2, _3, _4, ...) _4
-#define SELECT5(_1, _2, _3, _4, _5, ...) _5
+#define SELECT1(_1, ...) (_1)
 
 #define DEBUG_MALLOC_MIN 64
 
@@ -65,26 +62,26 @@ typedef void (*VoidFn)(void);
 #define TERM_MAGENTA "\x1B[35m"
 #define TERM_CYAN    "\x1B[36m"
 #define TERM_WHITE   "\x1B[37m"
-#define DEBUG_COLOUR(args...) (fprintf(stderr, !strncmp(SELECT1(args), "[INIT]" , 6)? TERM_WHITE  : \
-                                               !strncmp(SELECT1(args), "[RES]"  , 5)? TERM_GREEN  : \
-                                               !strncmp(SELECT1(args), "[GFX]"  , 5)? TERM_BLUE   : \
-                                               !strncmp(SELECT1(args), "[MATHS]", 7)? TERM_YELLOW : \
-                                               !strncmp(SELECT1(args), "[MEM]"  , 5)? TERM_MAGENTA: \
-                                               TERM_NORMAL))
+#define DEBUG_COLOUR(str) (fprintf(stderr, !strncmp((str), "[INIT]" , 6)? TERM_WHITE  : \
+                                           !strncmp((str), "[RES]"  , 5)? TERM_GREEN  : \
+                                           !strncmp((str), "[GFX]"  , 5)? TERM_BLUE   : \
+                                           !strncmp((str), "[MATHS]", 7)? TERM_YELLOW : \
+                                           !strncmp((str), "[MEM]"  , 5)? TERM_MAGENTA: \
+                                           TERM_NORMAL))
 
 #ifdef DEBUGGING
-	#define DEBUG(args...) do {                    \
-			if (SELECT1(args)[0]) {                \
-				DEBUG_COLOUR(args);                \
-				fprintf(stderr, args);             \
-				fprintf(stderr, "\n" TERM_NORMAL); \
-			}                                      \
+	#define DEBUG(...) do {                           \
+			if (SELECT1(__VA_ARGS__, "")[0]) {         \
+				DEBUG_COLOUR(SELECT1(__VA_ARGS__, "")); \
+				fprintf(stderr, __VA_ARGS__);            \
+				fprintf(stderr, "\n" TERM_NORMAL);        \
+			}\
 		} while (0)
-	#define ERROR(args...) do {                              \
-			fprintf(stderr, TERM_RED);                       \
-			fprintf(stderr, args);                           \
+	#define ERROR(...) do {                               \
+			fprintf(stderr, TERM_RED);                     \
+			fprintf(stderr, __VA_ARGS__);                   \
 			fprintf(stderr, "\n\t%s:%d in %s\n" TERM_NORMAL, \
-				    __FILE__, __LINE__, __func__);           \
+				    __FILE__, __LINE__, __func__);            \
 		} while (0)
 	#define DEBUG_GL() do {                                                                 \
 		GLenum err;                                                                         \

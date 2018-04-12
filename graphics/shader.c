@@ -35,8 +35,7 @@ uint32 shader_new_vshader(const char* src)
         DEBUG("[GFX] Vertex shader compiled");
         DEBUG(slog);
     } else {
-        ERROR("[GFX] Vertex shader failed to compile: %s", slog);
-        DEBUG("%s\n", src);
+        ERROR("[GFX] Vertex shader (%s) failed to compile: %s", src, slog);
     }
 
     DEBUG_GL();
@@ -56,8 +55,7 @@ uint32 shader_new_fshader(const char* src)
         DEBUG("[GFX] Fragment shader compiled");
         DEBUG(slog);
     } else {
-        ERROR("[GFX] Fragment shader failed to compile: %s", slog);
-        DEBUG("%s", src);
+        ERROR("[GFX] Fragment shader (%s) failed to compile: %s", src, slog);
     }
 
     DEBUG_GL();
