@@ -11,8 +11,6 @@
 #include "config.h"
 #include "csage.h"
 
-#include "game.h"
-
 SDL_Window* window;
 SDL_GLContext context;
 struct Renderer renderer;
@@ -21,11 +19,7 @@ struct Camera camera;
 int main(int argc, char** argv)
 {
 	(void)argc; (void)argv;
-	NimMain();
-	DEBUG("[INIT] Nim initialized");
-
 	csage_init();
-	init();
 	csage_loop();
 }
 
@@ -127,7 +121,6 @@ void csage_loop()
 			bank -= LOGIC_FPS;
 
 			em_update(dt);
-			update(dt);
 			camera_update(&camera, dt);
 		}
 
