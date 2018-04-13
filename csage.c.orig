@@ -6,12 +6,17 @@
 
 #include "common.h"
 #include "maths/maths.h"
-#include "graphics/graphics.h"
+#include "gfx/primitives.h"
+#include "gfx/sprite.h"
+#include "gfx/camera.h"
+#include "gfx/renderer.h"
 #include "resourcemanager.h"
 #include "eventmanager.h"
 #include "config.h"
 #include "csage.h"
 
+<<<<<<< Updated upstream
+=======
 static pthread threads[THREAD_COUNT];
 enum Threads {
 	THREAD_MAIN,
@@ -19,6 +24,7 @@ enum Threads {
 	THREAD2,
 	THREAD3,
 };
+>>>>>>> Stashed changes
 
 SDL_Window* window;
 SDL_GLContext context;

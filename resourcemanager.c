@@ -7,7 +7,7 @@
 #include "common.h"
 #include "maths/maths.h"
 #include "util/file.h"
-#include "graphics/graphics.h"
+#include "gfx/shader.h"
 #include "resourcemanager.h"
 
 struct Shader* rmshaders[MAX_SHADERS] = { 0 };

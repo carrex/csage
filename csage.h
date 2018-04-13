@@ -1,9 +1,10 @@
 #ifndef CSAGE_H
 #define CSAGE_H
 
-#define CSAGE_DIMENSIONS 3
-
 #include "common.h"
+
+#define THREAD_COUNT 4
+#define CSAGE_DIMENSIONS 3
 
 extern struct Renderer renderer;
 
