@@ -25,7 +25,7 @@ OBJDIR = ./obj
 SRC := $(wildcard $(SRCDIR)/nimcache/*.c) \
        $(wildcard $(SRCDIR)/maths/*.c)    \
        $(wildcard $(SRCDIR)/util/*.c)     \
-       $(wildcard $(SRCDIR)/graphics/*.c) \
+       $(wildcard $(SRCDIR)/gfx/*.c) \
        $(wildcard $(SRCDIR)/*.c)
 OBJ := $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 LIB := -ldl -lm -lpthread -lSDL2 -lGL -lGLEW -DGLEW_STATIC -lopenblas -lSOIL2

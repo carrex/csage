@@ -5,7 +5,10 @@
 
 #include "common.h"
 #include "maths/maths.h"
-#include "graphics/graphics.h"
+#include "gfx/primitives.h"
+#include "gfx/sprite.h"
+#include "gfx/camera.h"
+#include "gfx/renderer.h"
 #include "resourcemanager.h"
 #include "eventmanager.h"
 #include "config.h"

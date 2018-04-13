@@ -2,7 +2,7 @@
 
 #include "common.h"
 #include "maths/maths.h"
-#include "graphics/texture.h"
+#include "gfx/texture.h"
 #include "resourcemanager.h"
 #include "sprite.h"
 

@@ -1,7 +1,9 @@
 #include "common.h"
 #include "maths/maths.h"
 #include "resourcemanager.h"
-#include "graphics.h"
+#include "shader.h"
+#include "primitives.h"
+#include "sprite.h"
 #include "camera.h"
 #include "renderer.h"
 

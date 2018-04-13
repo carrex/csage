@@ -3,6 +3,8 @@
 
 /* To be replaced by JSON/YAML/something as a loaded config */
 
+#define SCENE_DIR "assets/scenes/"
+
 #define LOGIC_FPS 1000.0 / 120.0
 #define WINDOW_TITLE "CSage"
 #define WINDOW_X SDL_WINDOWPOS_CENTERED
